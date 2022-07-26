@@ -7,12 +7,9 @@ import ru.alexander.nnlib.tools.DataSet;
 
 import java.util.List;
 
-public class MomentumBackPropagation extends LearningRule {
+public class MomentumBackPropagation extends BackPropagation {
 
     private float momentum = 0;
-    private float maxError = 0.1f;
-
-    private float[][] error;
     private float[][][] acceleration;
 
     @Override
@@ -25,17 +22,16 @@ public class MomentumBackPropagation extends LearningRule {
             for (int l = 1; l < layers.size(); l++)
                 acceleration[l] = new float[layers.get(l).getLayerSize()][layers.get(l - 1).getLayerSize()];
 
-            float err = 0;
             do {
 
                 for (DataSet.DataSetRow row : dataSet.getRows()) {
                     network.setInput(row.input);
                     network.calculate();
 
-                    err = calculateError(layers, row);
+                    totalError = calculateError(layers, row);
                     calculateWeights(layers, row);
                 }
-            } while (err > maxError);
+            } while (totalError > maxError);
         } catch (NoInputLayerException | EmptyNeuralNetworkException e) {
             throw new RuntimeException(e);
         }

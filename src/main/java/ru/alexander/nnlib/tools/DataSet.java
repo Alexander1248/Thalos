@@ -1,6 +1,7 @@
 package ru.alexander.nnlib.tools;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class DataSet {
@@ -16,6 +17,14 @@ public class DataSet {
     public List<DataSetRow> getRows() {
         return rows;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        for (DataSetRow row : rows) builder.append(row).append("\n");
+        return builder.toString();
+    }
+
     public static class DataSetRow {
         public float[] input;
         public float[] output;
@@ -23,6 +32,11 @@ public class DataSet {
         public DataSetRow(float[] input, float[] output) {
             this.input = input;
             this.output = output;
+        }
+
+        @Override
+        public String toString() {
+            return Arrays.toString(input) + " - " + Arrays.toString(output);
         }
     }
 }

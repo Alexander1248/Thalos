@@ -8,38 +8,41 @@ import ru.alexander.nnlib.tools.DataSet;
 import java.util.List;
 
 public class BackPropagation extends LearningRule {
-    private float maxError = 0.1f;
-
-    private float[][] error;
+    protected float maxError = 0.01f;
+    protected float[][] error;
+    protected float totalError = Float.POSITIVE_INFINITY;
 
     @Override
     public void learn(DataSet dataSet) {
         try {
             List<Layer> layers = network.getLayers();
             error = new float[layers.size()][];
-            float err = 0;
-            do {
 
+            do {
+                float err = 0;
                 for (DataSet.DataSetRow row : dataSet.getRows()) {
                     network.setInput(row.input);
                     network.calculate();
 
-                    err = calculateError(layers, row);
+                    err += calculateError(layers, row);
                     calculateWeights(layers, row);
                 }
-            } while (err > maxError);
+                totalError = err;
+            } while (totalError > maxError);
         } catch (NoInputLayerException | EmptyNeuralNetworkException e) {
             throw new RuntimeException(e);
         }
     }
+
     private float calculateError(List<Layer> layers, DataSet.DataSetRow row) {
         float err = 0;
         Layer outLayer = layers.get(layers.size() - 1);
         float[] output = outLayer.getOutput();
         error[layers.size() - 1] = new float[output.length];
+
         for (int current = 0; current < output.length; current++) {
             error[layers.size() - 1][current] = (row.output[current] - output[current]);
-            err += error[layers.size() - 1][current];
+            err += Math.abs(error[layers.size() - 1][current]);
 
             float wsum = outLayer.getWeightedSum()[current];
             double pow = Math.pow(1 + Math.exp(-wsum), 2);
@@ -50,25 +53,24 @@ public class BackPropagation extends LearningRule {
             else if (outLayer.getAfType() == 5) error[layers.size() - 1][current] *= wsum > 0 ? 1 : 0.01;
             else if (outLayer.getAfType() == 6) error[layers.size() - 1][current] *= ((wsum + 1) * Math.exp(-wsum) + 1) / pow;
         }
-
         for (int l = layers.size() - 2; l >= 0; l--) {
-            error[l] = new float[output.length];
             Layer layer = layers.get(l);
+            error[l] = new float[layer.getLayerSize()];
+
             for (int current = 0; current < layer.getLayerSize(); current++) {
                 float e = 0;
                 for (int next = 0; next < layers.get(l + 1).getLayerSize(); next++)
                     e += layers.get(l + 1).getWeights()[current + next * layer.getLayerSize()] * error[l + 1][next];
 
                 error[l][current] = e;
-
-                float wsum = outLayer.getWeightedSum()[current];
+                float wsum = layer.getWeightedSum()[current];
                 double pow = Math.pow(1 + Math.exp(-wsum), 2);
-                if (outLayer.getAfType() == 1) error[l][current] *= Math.exp(-wsum) / pow;
-                else if (outLayer.getAfType() == 2) error[l][current] *= 2f * Math.exp(-wsum) / pow;
-                else if (outLayer.getAfType() == 3) error[l][current] *= 1f / (1f + (float)Math.exp(-wsum));
-                else if (outLayer.getAfType() == 4) error[l][current] *= wsum > 0 ? 1 : 0;
-                else if (outLayer.getAfType() == 5) error[l][current] *= wsum > 0 ? 1 : 0.01;
-                else if (outLayer.getAfType() == 6) error[l][current] *= ((wsum + 1) * Math.exp(-wsum) + 1) / pow;
+                if (layer.getAfType() == 1) error[l][current] *= Math.exp(-wsum) / pow;
+                else if (layer.getAfType() == 2) error[l][current] *= 2f * Math.exp(-wsum) / pow;
+                else if (layer.getAfType() == 3) error[l][current] *= 1f / (1f + (float)Math.exp(-wsum));
+                else if (layer.getAfType() == 4) error[l][current] *= wsum > 0 ? 1 : 0;
+                else if (layer.getAfType() == 5) error[l][current] *= wsum > 0 ? 1 : 0.01;
+                else if (layer.getAfType() == 6) error[l][current] *= ((wsum + 1) * Math.exp(-wsum) + 1) / pow;
             }
         }
         return err;
@@ -97,5 +99,9 @@ public class BackPropagation extends LearningRule {
 
     public float getMaxError() {
         return maxError;
+    }
+
+    public float getTotalError() {
+        return totalError;
     }
 }

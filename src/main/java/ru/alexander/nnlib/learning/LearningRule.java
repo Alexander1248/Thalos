@@ -5,7 +5,7 @@ import ru.alexander.nnlib.tools.DataSet;
 
 public abstract class LearningRule {
     protected NeuralNetwork network;
-    private float learningSpeed;
+    private float learningSpeed = 0.1f;
 
     public float getLearningSpeed() {
         return learningSpeed;

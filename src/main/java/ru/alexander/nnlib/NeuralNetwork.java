@@ -2,6 +2,7 @@ package ru.alexander.nnlib;
 
 import ru.alexander.nnlib.exceptions.EmptyNeuralNetworkException;
 import ru.alexander.nnlib.exceptions.NoInputLayerException;
+import ru.alexander.nnlib.learning.BackPropagation;
 import ru.alexander.nnlib.learning.LearningRule;
 import ru.alexander.nnlib.tools.DataSet;
 import ru.alexander.nnlib.types.ActivationFunctionType;
@@ -15,18 +16,30 @@ public class NeuralNetwork {
     private final List<Layer> layers = new ArrayList<>();
     private int inputSize = 0;
 
-    private LearningRule rule;
+    private LearningRule rule = new BackPropagation();
 
-    public WorkingType workingType;
+    public WorkingType workingType = WorkingType.Standard;
 
-    public void addLayer(int size, ThreadingType threadingType, ActivationFunctionType activationFunctionType) {
-        if (layers.size() == 0) {
+
+    public NeuralNetwork() {
+        rule.setNetwork(this);
+    }
+
+    public void addLayer(int size, ActivationFunctionType activationFunctionType, ThreadingType threadingType) {
+        if (layers.isEmpty()) {
             if (inputSize == 0) inputSize = size;
             else layers.add(new Layer(inputSize, size, threadingType, activationFunctionType));
-
         }
         else layers.add(new Layer(layers.get(layers.size() - 1).getLayerSize(), size, threadingType, activationFunctionType));
     }
+    public void addLayer(int size, ActivationFunctionType activationFunctionType) {
+        addLayer(size, activationFunctionType, ThreadingType.CPU);
+    }
+    public void addLayer(int size) {
+        addLayer(size, ActivationFunctionType.Sigmoid, ThreadingType.CPU);
+    }
+
+
     public void calculate() {
         switch (workingType) {
             case Standard -> {
@@ -69,7 +82,7 @@ public class NeuralNetwork {
         return rule;
     }
 
-    public void setRule(LearningRule rule) {
+    public void setLearningRule(LearningRule rule) {
         this.rule = rule;
         rule.setNetwork(this);
     }
@@ -78,7 +91,7 @@ public class NeuralNetwork {
         rule.learn(dataSet);
     }
     public void learnInNewThread(DataSet dataSet) {
-        new Thread(() -> rule.learn(dataSet)).start();
+        new Thread(() -> rule.learn(dataSet) ).start();
     }
 
     public int getInputSize() {
