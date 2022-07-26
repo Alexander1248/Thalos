@@ -3,7 +3,7 @@ package ru.alexander.nnlib.learning;
 import ru.alexander.nnlib.Layer;
 import ru.alexander.nnlib.exceptions.EmptyNeuralNetworkException;
 import ru.alexander.nnlib.exceptions.NoInputLayerException;
-import ru.alexander.nnlib.tools.DataSet;
+import ru.alexander.nnlib.DataSet;
 
 import java.util.List;
 
@@ -23,14 +23,15 @@ public class MomentumBackPropagation extends BackPropagation {
                 acceleration[l] = new float[layers.get(l).getLayerSize()][layers.get(l - 1).getLayerSize()];
 
             do {
-
+                float err = 0;
                 for (DataSet.DataSetRow row : dataSet.getRows()) {
                     network.setInput(row.input);
                     network.calculate();
 
-                    totalError = calculateError(layers, row);
+                    err += calculateError(layers, row);
                     calculateWeights(layers, row);
                 }
+                totalError = err;
             } while (totalError > maxError);
         } catch (NoInputLayerException | EmptyNeuralNetworkException e) {
             throw new RuntimeException(e);
@@ -41,10 +42,10 @@ public class MomentumBackPropagation extends BackPropagation {
         Layer outLayer = layers.get(layers.size() - 1);
         float[] output = outLayer.getOutput();
         error[layers.size() - 1] = new float[output.length];
+
         for (int current = 0; current < output.length; current++) {
             error[layers.size() - 1][current] = (row.output[current] - output[current]);
-
-            err += error[layers.size() - 1][current];
+            err += Math.abs(error[layers.size() - 1][current]);
 
             float wsum = outLayer.getWeightedSum()[current];
             double pow = Math.pow(1 + Math.exp(-wsum), 2);
@@ -55,25 +56,24 @@ public class MomentumBackPropagation extends BackPropagation {
             else if (outLayer.getAfType() == 5) error[layers.size() - 1][current] *= wsum > 0 ? 1 : 0.01;
             else if (outLayer.getAfType() == 6) error[layers.size() - 1][current] *= ((wsum + 1) * Math.exp(-wsum) + 1) / pow;
         }
-
         for (int l = layers.size() - 2; l >= 0; l--) {
-            error[l] = new float[output.length];
             Layer layer = layers.get(l);
+            error[l] = new float[layer.getLayerSize()];
+
             for (int current = 0; current < layer.getLayerSize(); current++) {
                 float e = 0;
                 for (int next = 0; next < layers.get(l + 1).getLayerSize(); next++)
                     e += layers.get(l + 1).getWeights()[current + next * layer.getLayerSize()] * error[l + 1][next];
 
                 error[l][current] = e;
-
-                float wsum = outLayer.getWeightedSum()[current];
+                float wsum = layer.getWeightedSum()[current];
                 double pow = Math.pow(1 + Math.exp(-wsum), 2);
-                if (outLayer.getAfType() == 1) error[l][current] *= Math.exp(-wsum) / pow;
-                else if (outLayer.getAfType() == 2) error[l][current] *= 2f * Math.exp(-wsum) / pow;
-                else if (outLayer.getAfType() == 3) error[l][current] *= 1f / (1f + (float)Math.exp(-wsum));
-                else if (outLayer.getAfType() == 4) error[l][current] *= wsum > 0 ? 1 : 0;
-                else if (outLayer.getAfType() == 5) error[l][current] *= wsum > 0 ? 1 : 0.01;
-                else if (outLayer.getAfType() == 6) error[l][current] *= ((wsum + 1) * Math.exp(-wsum) + 1) / pow;
+                if (layer.getAfType() == 1) error[l][current] *= Math.exp(-wsum) / pow;
+                else if (layer.getAfType() == 2) error[l][current] *= 2f * Math.exp(-wsum) / pow;
+                else if (layer.getAfType() == 3) error[l][current] *= 1f / (1f + (float)Math.exp(-wsum));
+                else if (layer.getAfType() == 4) error[l][current] *= wsum > 0 ? 1 : 0;
+                else if (layer.getAfType() == 5) error[l][current] *= wsum > 0 ? 1 : 0.01;
+                else if (layer.getAfType() == 6) error[l][current] *= ((wsum + 1) * Math.exp(-wsum) + 1) / pow;
             }
         }
         return err;
@@ -93,7 +93,7 @@ public class MomentumBackPropagation extends BackPropagation {
                 for (int prev = 0; prev < layers.get(l - 1).getLayerSize(); prev++) {
                     acceleration[l][current][prev] *= momentum;
                     acceleration[l][current][prev] += (1 - momentum) * error[l][current] * layers.get(l - 1).getOutput()[prev] * getLearningSpeed();
-                    layers.get(l).getWeights()[current * row.input.length + prev] += acceleration[l][current][prev];
+                    layers.get(l).getWeights()[current * layers.get(l - 1).getLayerSize() + prev] += acceleration[l][current][prev];
                 }
                 layers.get(l).getBiasWeights()[current] += error[l][current] * getLearningSpeed();
             }

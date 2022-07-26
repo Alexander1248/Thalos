@@ -3,7 +3,7 @@ package ru.alexander.nnlib.learning;
 import ru.alexander.nnlib.Layer;
 import ru.alexander.nnlib.exceptions.EmptyNeuralNetworkException;
 import ru.alexander.nnlib.exceptions.NoInputLayerException;
-import ru.alexander.nnlib.tools.DataSet;
+import ru.alexander.nnlib.DataSet;
 
 import java.util.List;
 
@@ -86,7 +86,7 @@ public class BackPropagation extends LearningRule {
         for (int l = 1; l < layers.size(); l++) {
             for (int i = 0; i < layers.get(l).getLayerSize(); i++) {
                 for (int j = 0; j < layers.get(l - 1).getLayerSize(); j++) {
-                    layers.get(l).getWeights()[i * row.input.length + j] += error[l][i] * layers.get(l - 1).getOutput()[j] * getLearningSpeed();
+                    layers.get(l).getWeights()[i * layers.get(l - 1).getLayerSize() + j] += error[l][i] * layers.get(l - 1).getOutput()[j] * getLearningSpeed();
                 }
                 layers.get(l).getBiasWeights()[i] += error[l][i] * getLearningSpeed();
             }

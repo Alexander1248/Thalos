@@ -4,7 +4,6 @@ import ru.alexander.nnlib.exceptions.EmptyNeuralNetworkException;
 import ru.alexander.nnlib.exceptions.NoInputLayerException;
 import ru.alexander.nnlib.learning.BackPropagation;
 import ru.alexander.nnlib.learning.LearningRule;
-import ru.alexander.nnlib.tools.DataSet;
 import ru.alexander.nnlib.types.ActivationFunctionType;
 import ru.alexander.nnlib.types.ThreadingType;
 import ru.alexander.nnlib.types.WorkingType;
