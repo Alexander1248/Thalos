@@ -6,7 +6,7 @@
 
     <groupId>ru.alexander</groupId>
     <artifactId>FastNNLib</artifactId>
-    <version>0.1</version>
+    <version>0.3</version>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -18,6 +18,12 @@
             <groupId>com.aparapi</groupId>
             <artifactId>aparapi</artifactId>
             <version>3.0.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13.2</version>
         </dependency>
     </dependencies>
 
