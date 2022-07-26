@@ -80,4 +80,8 @@ public class NeuralNetwork {
     public void learnInNewThread(DataSet dataSet) {
         new Thread(() -> rule.learn(dataSet)).start();
     }
+
+    public int getInputSize() {
+        return inputSize;
+    }
 }
