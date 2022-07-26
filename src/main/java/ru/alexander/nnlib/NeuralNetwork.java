@@ -1,6 +1,9 @@
 package ru.alexander.nnlib;
 
-import ru.alexander.nnlib.exceptions.NoFirstLayerException;
+import ru.alexander.nnlib.exceptions.EmptyNeuralNetworkException;
+import ru.alexander.nnlib.exceptions.NoInputLayerException;
+import ru.alexander.nnlib.learning.LearningRule;
+import ru.alexander.nnlib.tools.DataSet;
 import ru.alexander.nnlib.types.ActivationFunctionType;
 import ru.alexander.nnlib.types.ThreadingType;
 import ru.alexander.nnlib.types.WorkingType;
@@ -11,6 +14,8 @@ import java.util.List;
 public class NeuralNetwork {
     private final List<Layer> layers = new ArrayList<>();
     private int inputSize = 0;
+
+    private LearningRule rule;
 
     public WorkingType workingType;
 
@@ -41,10 +46,13 @@ public class NeuralNetwork {
         }
     }
 
-    public void setInput(float... input) throws NoFirstLayerException {
-        if (input.length == inputSize) layers.get(0).setInput(input);
+    public void setInput(float... input) throws NoInputLayerException, EmptyNeuralNetworkException {
+        if (input.length == inputSize) {
+            if (layers.size() == 0) throw new EmptyNeuralNetworkException();
+            else layers.get(0).setInput(input);
+        }
         else {
-            if (inputSize == 0) throw new NoFirstLayerException();
+            if (inputSize == 0) throw new NoInputLayerException();
             else throw new ArrayIndexOutOfBoundsException("Expected: " + inputSize + " Submitted: " + input.length);
         }
     }
@@ -54,5 +62,22 @@ public class NeuralNetwork {
 
     public List<Layer> getLayers() {
         return layers;
+    }
+
+
+    public LearningRule getLearningRule() {
+        return rule;
+    }
+
+    public void setRule(LearningRule rule) {
+        this.rule = rule;
+        rule.setNetwork(this);
+    }
+
+    public void learn(DataSet dataSet) {
+        rule.learn(dataSet);
+    }
+    public void learnInNewThread(DataSet dataSet) {
+        new Thread(() -> rule.learn(dataSet)).start();
     }
 }

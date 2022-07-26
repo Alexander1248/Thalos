@@ -1,9 +1,9 @@
-package ru.alexander.nnlib.tools;
+package ru.alexander.nnlib.kernels;
 
-public abstract class ThreadSplitter {
+public abstract class ThreadKernel {
     private Thread[] threads;
 
-    public ThreadSplitter(int threadCount) {
+    public ThreadKernel(int threadCount) {
         threads = new Thread[threadCount];
     }
     public void execute(int size) {

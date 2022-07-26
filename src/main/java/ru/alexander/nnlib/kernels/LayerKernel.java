@@ -1,4 +1,4 @@
-package ru.alexander.nnlib.tools;
+package ru.alexander.nnlib.kernels;
 
 
 import com.aparapi.Kernel;
@@ -6,6 +6,7 @@ import com.aparapi.Kernel;
 public class LayerKernel extends Kernel {
     public float input[];
     public float weights[];
+    public float biasWeights[];
 
     public float weightedSum[];
     public float output[];
@@ -14,7 +15,7 @@ public class LayerKernel extends Kernel {
 
     public void run() {
         int gid = getGlobalId();
-        weightedSum[gid] = 0;
+        weightedSum[gid] = biasWeights[gid];
         for (int i = 0; i < input.length; i++)
             weightedSum[gid] += input[i] * weights[gid * input.length + i];
 

@@ -5,7 +5,7 @@ import ru.alexander.nnlib.types.ActivationFunctionType;
 import ru.alexander.nnlib.types.ThreadingType;
 
 public class LayerTest extends TestCase {
-    private final int size = 1000;
+    private final int size = 10000;
     private final int iterations = 10;
     private static float cpu;
     private static float cpuBuild;
@@ -13,10 +13,11 @@ public class LayerTest extends TestCase {
     private static float gpuBuild;
 
     public void testLayerCPU() {
+        System.out.println("--------------------------------------------------");
         long startTime = System.nanoTime();
         Layer layer = new Layer(size, size, ThreadingType.CPU, ActivationFunctionType.Sigmoid);
-        LayerTest.cpuBuild = (float) (System.nanoTime() - startTime) / 1_000_000_000;
-        System.out.println("CPU Building: " + LayerTest.cpuBuild);
+        LayerTest.cpuBuild = (float) (System.nanoTime() - startTime) / 1_000_000;
+        System.out.println("CPU Building: " + LayerTest.cpuBuild + " ms");
 
         float avg = 0;
         for (int i = 0; i < iterations; i++) {
@@ -26,17 +27,18 @@ public class LayerTest extends TestCase {
 
             startTime = System.nanoTime();
             layer.calculate();
-            avg += (float) (System.nanoTime() - startTime) / 1_000_000_000;
+            avg += (float) (System.nanoTime() - startTime) / 1_000_000;
         }
         LayerTest.cpu = avg / iterations;
-        System.out.println("CPU Calculating: " + LayerTest.cpu);
+        System.out.println("CPU Calculating: " + LayerTest.cpu + " ms");
 
     }
     public void testLayerGPU() {
+        System.out.println("--------------------------------------------------");
         long startTime = System.nanoTime();
         Layer layer = new Layer(size, size, ThreadingType.GPU, ActivationFunctionType.Sigmoid);
-        LayerTest.gpuBuild = (float) (System.nanoTime() - startTime) / 1_000_000_000;
-        System.out.println("CPU Building: " + LayerTest.gpuBuild);
+        LayerTest.gpuBuild = (float) (System.nanoTime() - startTime) / 1_000_000;
+        System.out.println("GPU Building: " + LayerTest.gpuBuild + " ms");
 
         float avg = 0;
         for (int i = 0; i < iterations; i++) {
@@ -46,13 +48,14 @@ public class LayerTest extends TestCase {
 
             startTime = System.nanoTime();
             layer.calculate();
-            avg += (float) (System.nanoTime() - startTime) / 1_000_000_000;
+            avg += (float) (System.nanoTime() - startTime) / 1_000_000;
         }
         LayerTest.gpu = avg / iterations;
-        System.out.println("GPU Calculating: " + LayerTest.gpu);
+        System.out.println("GPU Calculating: " + LayerTest.gpu + " ms");
     }
 
     public void testResult() {
+        System.out.println("--------------------------------------------------");
         System.out.println("GPU is " + LayerTest.cpu / LayerTest.gpu + " times faster than CPU");
         System.out.println("GPU is " + (LayerTest.cpu + LayerTest.cpuBuild) /  (LayerTest.gpu + LayerTest.gpuBuild) + " times faster than CPU, taking into account the build");
     }

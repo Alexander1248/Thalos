@@ -3,36 +3,41 @@ package ru.alexander.nnlib;
 import com.aparapi.Range;
 import com.aparapi.device.Device;
 import com.aparapi.exception.CompileFailedException;
-import ru.alexander.nnlib.tools.LayerKernel;
-import ru.alexander.nnlib.tools.ThreadSplitter;
+import ru.alexander.nnlib.kernels.LayerKernel;
+import ru.alexander.nnlib.kernels.ThreadKernel;
 import ru.alexander.nnlib.types.ActivationFunctionType;
 import ru.alexander.nnlib.types.ThreadingType;
 
 public class Layer {
-    private float input[];
-    private final float weights[];
+    private float[] input;
+    private final float[] weights;
+    private final float[] biasWeights;
     private final int inputSize;
-    private float weightedSum[];
-    private float output[];
+    private float[] weightedSum;
+    private float[] output;
     private final int layerSize;
 
     private final int afType;
 
     private ThreadingType type;
 
-    private ThreadSplitter cpu;
+    private ThreadKernel cpu;
     private LayerKernel gpu;
 
     public Layer(int inputSize, int layerSize, ThreadingType threadingType, ActivationFunctionType activationFunctionType) {
 
         this.inputSize = inputSize;
+        biasWeights = new float[layerSize];
         weightedSum = new float[layerSize];
         output = new float[layerSize];
         this.layerSize = layerSize;
 
         weights = new float[inputSize * layerSize];
-        for (int i = 0; i < inputSize * layerSize; i++)
-                weights[i] = (float) (Math.random() * 2 - 1);
+        for (int i = 0; i < layerSize; i++) {
+            for (int j = 0; j < inputSize; j++)
+                weights[i * inputSize + j] = (float) (Math.random() * 2 - 1);
+            biasWeights[i] = (float) (Math.random() * 2 - 1);
+        }
 
         int buff = -1;
         ActivationFunctionType[] values = ActivationFunctionType.values();
@@ -49,16 +54,16 @@ public class Layer {
     public void setThreadingType(ThreadingType type) {
         this.type = type;
         switch (type) {
-            case CPU ->  cpu = new ThreadSplitter(Runtime.getRuntime().availableProcessors() / 2) {
+            case CPU ->  cpu = new ThreadKernel(Runtime.getRuntime().availableProcessors() / 2) {
                     @Override
                     public void run(int gid) {
-                        weightedSum[gid] = 0;
+                        weightedSum[gid] = biasWeights[gid];
                         for (int i = 0; i < input.length; i++)
                             weightedSum[gid] += input[i] * weights[gid * input.length + i];
 
                         if (afType == 0) output[gid] = weightedSum[gid];
-                        else if (afType == 1) output[gid] = 1f / (1 + (float)Math.exp(-weightedSum[gid]));
-                        else if (afType == 2) output[gid] = 2f / (1 + (float)Math.exp(-weightedSum[gid])) - 1;
+                        else if (afType == 1) output[gid] = 1f / (1f + (float)Math.exp(-weightedSum[gid]));
+                        else if (afType == 2) output[gid] = 2f / (1f + (float)Math.exp(-weightedSum[gid])) - 1;
                         else if (afType == 3) output[gid] = (float) Math.log(1 + Math.exp(weightedSum[gid]));
                         else if (afType == 4) {
                             if (weightedSum[gid] > 0) output[gid] = weightedSum[gid];
@@ -88,6 +93,7 @@ public class Layer {
             case GPU -> {
                 gpu.input = input;
                 gpu.weights = weights;
+                gpu.biasWeights = biasWeights;
                 gpu.afType = afType;
                 gpu.weightedSum = weightedSum;
                 gpu.output = output;
@@ -115,7 +121,15 @@ public class Layer {
         return weights;
     }
 
+    public float[] getBiasWeights() {
+        return biasWeights;
+    }
+
     public int getLayerSize() {
         return layerSize;
+    }
+
+    public int getAfType() {
+        return afType;
     }
 }

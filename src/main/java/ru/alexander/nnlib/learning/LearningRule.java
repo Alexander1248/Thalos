@@ -1,13 +1,23 @@
 package ru.alexander.nnlib.learning;
 
-public abstract class LearningRule {
-    private float learningRule;
+import ru.alexander.nnlib.NeuralNetwork;
+import ru.alexander.nnlib.tools.DataSet;
 
-    public float getLearningRule() {
-        return learningRule;
+public abstract class LearningRule {
+    protected NeuralNetwork network;
+    private float learningSpeed;
+
+    public float getLearningSpeed() {
+        return learningSpeed;
     }
 
-    public void setLearningRule(float learningRule) {
-        this.learningRule = learningRule;
+    public void setLearningSpeed(float learningSpeed) {
+        this.learningSpeed = learningSpeed;
+    }
+
+    public abstract void learn(DataSet dataSet);
+
+    public void setNetwork(NeuralNetwork network) {
+        this.network = network;
     }
 }
