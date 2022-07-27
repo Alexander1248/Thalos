@@ -15,11 +15,10 @@ public class WeightsKernel extends Kernel {
     public float learningSpeed;
 
     public void run() {
-        for (int i = 0; i < layerSize; i++) {
-            for (int j = 0; j < prevLayerSize; j++)
-                weights[i * prevLayerSize + j] += error[i] * input[j] * learningSpeed;
+        int gid = getGlobalId();
+        for (int j = 0; j < prevLayerSize; j++)
+            weights[gid * prevLayerSize + j] += error[gid] * input[j] * learningSpeed;
 
-            biasWeights[i] += error[i] * learningSpeed;
-        }
+        biasWeights[gid] += error[gid] * learningSpeed;
     }
 }

@@ -25,8 +25,8 @@ public class BackPropagation extends LearningRule {
     protected ErrorKernel gpuError;
     protected WeightsKernel gpuWeights;
 
-    private int l = 0;
-    private float[] layerInput;
+    protected int l = 0;
+    protected float[] layerInput;
     public BackPropagation() {
         setThreadingType(ThreadingType.CPU);
     }
