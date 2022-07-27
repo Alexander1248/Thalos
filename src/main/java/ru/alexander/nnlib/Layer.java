@@ -3,10 +3,14 @@ package ru.alexander.nnlib;
 import com.aparapi.Range;
 import com.aparapi.device.Device;
 import com.aparapi.exception.CompileFailedException;
+import com.aparapi.internal.kernel.KernelManager;
 import ru.alexander.nnlib.kernels.LayerKernel;
 import ru.alexander.nnlib.kernels.ThreadKernel;
 import ru.alexander.nnlib.types.ActivationFunctionType;
 import ru.alexander.nnlib.types.ThreadingType;
+
+import java.lang.reflect.Type;
+import java.util.List;
 
 public class Layer {
     private float[] input;
@@ -79,7 +83,7 @@ public class Layer {
             case GPU -> {
                 gpu = new LayerKernel();
                 try {
-                    gpu.compile(Device.best());
+                    gpu.compile(KernelManager.instance().getDefaultPreferences().getPreferredDevices(null).get(0));
                 } catch (CompileFailedException e) {
                     throw new RuntimeException(e);
                 }

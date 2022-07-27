@@ -1,5 +1,7 @@
 package ru.alexander.nnlib.learning;
 
+import com.aparapi.exception.CompileFailedException;
+import com.aparapi.internal.kernel.KernelManager;
 import ru.alexander.nnlib.Layer;
 import ru.alexander.nnlib.exceptions.EmptyNeuralNetworkException;
 import ru.alexander.nnlib.exceptions.NoInputLayerException;
@@ -194,6 +196,13 @@ public class MomentumBackPropagation extends BackPropagation {
             case GPU -> {
                 gpuError = new ErrorKernel();
                 gpuWeights = new AcceleratedWeightsKernel();
+
+                try {
+                    gpuError.compile(KernelManager.instance().getDefaultPreferences().getPreferredDevices(null).get(0));
+                    gpuWeights.compile(KernelManager.instance().getDefaultPreferences().getPreferredDevices(null).get(0));
+                } catch (CompileFailedException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
     }
