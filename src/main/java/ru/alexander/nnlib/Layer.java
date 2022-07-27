@@ -10,8 +10,8 @@ import ru.alexander.nnlib.types.ThreadingType;
 
 public class Layer {
     private float[] input;
-    private final float[] weights;
-    private final float[] biasWeights;
+    private float[] weights;
+    private float[] biasWeights;
     private final int inputSize;
     private float[] weightedSum;
     private float[] output;
@@ -131,5 +131,13 @@ public class Layer {
 
     public int getAfType() {
         return afType;
+    }
+
+    public void setWeights(float[] weights) {
+        this.weights = weights;
+    }
+
+    public void setBiasWeights(float[] biasWeights) {
+        this.biasWeights = biasWeights;
     }
 }

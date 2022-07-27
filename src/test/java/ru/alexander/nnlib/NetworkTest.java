@@ -7,43 +7,72 @@ import ru.alexander.nnlib.learning.BackPropagation;
 import ru.alexander.nnlib.types.ActivationFunctionType;
 import ru.alexander.nnlib.types.ThreadingType;
 
+import java.util.Arrays;
+
 public class NetworkTest extends TestCase {
-    public void testNetwork() {
+    public void testNetworkCPU() throws EmptyNeuralNetworkException, NoInputLayerException {
         NeuralNetwork network = new NeuralNetwork();
-        network.addLayer(100);
-        network.addLayer(80, ActivationFunctionType.Sigmoid, ThreadingType.GPU);
-        network.addLayer(100, ActivationFunctionType.Sigmoid, ThreadingType.GPU);
+        network.addLayer(10);
+        network.addLayer(100, ActivationFunctionType.Sigmoid, ThreadingType.CPU);
+        network.addLayer(10, ActivationFunctionType.Sigmoid, ThreadingType.CPU);
 
         DataSet set = new DataSet();
-        float[] data = new float[100];
-        for (int i = 0; i < 1000; i++) {
-            for (int j = 0; j < 100; j++) data[j] = (float) Math.random();
+        float[] data = new float[10];
+        for (int i = 0; i < 100; i++) {
+            for (int j = 0; j < data.length; j++) data[j] = (float) Math.random();
             set.addRow(data, data);
         }
 
         BackPropagation rule = (BackPropagation) network.getLearningRule();
-        rule.setLearningSpeed(0.005f);
-        rule.setMaxError(0.3f);
+        rule.setLearningSpeed(0.01f);
+        rule.setMaxIterations(10);
         network.learnInNewThread(set);
 
-        System.out.println(rule.getTotalError());
-        while (rule.getTotalError() > rule.getMaxError()) {
+        System.out.println(rule.getIteration() + " - " + rule.getTotalError());
+        while (rule.getIteration() < rule.getMaxIterations()) {
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-            System.out.println(rule.getTotalError());
+            System.out.println(rule.getIteration() + " - " + rule.getTotalError());
         }
-        System.out.println("Testing");
-        try {
-            for (int j = 0; j < 100; j++) data[j] = (float) Math.random();
-            network.setInput(data);
-            network.calculate();
-            for (int i = 0; i < 100; i++)
-                System.out.println(data[i] - network.getOutput()[i]);
-        } catch (NoInputLayerException | EmptyNeuralNetworkException e) {
-            throw new RuntimeException(e);
+        for (int j = 0; j < data.length; j++) data[j] = (float) Math.random();
+        network.setInput(data);
+        network.calculate();
+        System.out.println(Arrays.toString(network.getOutput()));
+    }
+    public void testNetworkGPU() throws EmptyNeuralNetworkException, NoInputLayerException {
+        NeuralNetwork network = new NeuralNetwork();
+        network.addLayer(10);
+        network.addLayer(100, ActivationFunctionType.Sigmoid, ThreadingType.GPU);
+        network.addLayer(10, ActivationFunctionType.Sigmoid, ThreadingType.GPU);
+
+        DataSet set = new DataSet();
+        float[] data = new float[10];
+        for (int i = 0; i < 100; i++) {
+            for (int j = 0; j < data.length; j++) data[j] = (float) Math.random();
+            set.addRow(data, data);
         }
+
+        BackPropagation rule = (BackPropagation) network.getLearningRule();
+        rule.setThreadingType(ThreadingType.GPU);
+        rule.setLearningSpeed(0.01f);
+        rule.setMaxIterations(10);
+        network.learnInNewThread(set);
+
+        System.out.println(rule.getIteration() + " - " + rule.getTotalError());
+        while (rule.getIteration() < rule.getMaxIterations()) {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            System.out.println(rule.getIteration() + " - " + rule.getTotalError());
+        }
+        for (int j = 0; j < data.length; j++) data[j] = (float) Math.random();
+        network.setInput(data);
+        network.calculate();
+        System.out.println(Arrays.toString(network.getOutput()));
     }
 }
