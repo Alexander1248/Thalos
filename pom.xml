@@ -4,8 +4,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>ru.alexander.nnlib</groupId>
-    <artifactId>FastNNLib</artifactId>
+    <groupId>ru.alexander1248</groupId>
+    <artifactId>fastnnlib</artifactId>
     <version>0.9.5</version>
 
     <properties>

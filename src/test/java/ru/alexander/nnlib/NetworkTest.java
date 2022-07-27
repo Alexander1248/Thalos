@@ -26,7 +26,7 @@ public class NetworkTest extends TestCase {
         MomentumBackPropagation rule = new MomentumBackPropagation();
         rule.setLearningSpeed(0.01f);
         rule.setMomentum(0.5f);
-        rule.setMaxIterations(10);
+        rule.setMaxIterations(5);
         network.setLearningRule(rule);
         network.learnInNewThread(set);
 
@@ -61,7 +61,7 @@ public class NetworkTest extends TestCase {
         rule.setThreadingType(ThreadingType.GPU);
         rule.setLearningSpeed(0.01f);
         rule.setMomentum(0.5f);
-        rule.setMaxIterations(10);
+        rule.setMaxIterations(5);
         network.setLearningRule(rule);
         network.learnInNewThread(set);
 
