@@ -3,6 +3,9 @@ package ru.alexander1248.nnlib.shell.networks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
 import ru.alexander1248.nnlib.core.NeuralNetwork;
+import ru.alexander1248.nnlib.core.learning.DataSet;
+import ru.alexander1248.nnlib.core.learning.teacher.BackPropagation;
+import ru.alexander1248.nnlib.core.learning.teacher.TeacherLearning;
 import ru.alexander1248.nnlib.core.types.ActivationFunction;
 import ru.alexander1248.nnlib.core.types.ThreadingType;
 
@@ -16,5 +19,15 @@ public class Autoencoder extends NeuralNetwork {
         addLayer(inputSize, activationFunction, threadingType);
         for (int i = 0; i < hiddenLayerCount; i++) addLayer(hiddenLayerSize, activationFunction, threadingType);
         addLayer(inputSize, activationFunction, threadingType);
+        setLearningRule(new BackPropagation());
+    }
+
+    public void learn(DataSet dataSet) {
+        ((TeacherLearning)getLearningRule()).setDataSet(dataSet);
+        super.learn();
+    }
+    public void learnInNewThread(DataSet dataSet) {
+        ((TeacherLearning)getLearningRule()).setDataSet(dataSet);
+        super.learnInNewThread();
     }
 }

@@ -5,16 +5,15 @@ import com.aparapi.internal.kernel.KernelManager;
 import ru.alexander1248.nnlib.core.Layer;
 import ru.alexander1248.nnlib.core.exceptions.EmptyNeuralNetworkException;
 import ru.alexander1248.nnlib.core.exceptions.NoInputLayerException;
-import ru.alexander1248.nnlib.core.DataSet;
 import ru.alexander1248.nnlib.core.kernels.learning.teacher.ErrorKernel;
 import ru.alexander1248.nnlib.core.kernels.ThreadKernel;
 import ru.alexander1248.nnlib.core.kernels.learning.teacher.WeightsKernel;
+import ru.alexander1248.nnlib.core.learning.DataSet;
 import ru.alexander1248.nnlib.core.types.ThreadingType;
 
 import java.util.List;
 
 import static ru.alexander1248.nnlib.core.types.ThreadingType.CPU;
-import static ru.alexander1248.nnlib.core.types.ThreadingType.GPU;
 
 public class BackPropagation extends TeacherLearning {
     protected float[][] error;
@@ -30,7 +29,7 @@ public class BackPropagation extends TeacherLearning {
     }
 
     @Override
-    public void learn(DataSet dataSet) {
+    public void learn() {
         try {
             List<Layer> layers = network.getLayers();
             error = new float[layers.size()][];

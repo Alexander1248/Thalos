@@ -5,6 +5,7 @@ import ru.alexander1248.nnlib.core.exceptions.EmptyNeuralNetworkException;
 import ru.alexander1248.nnlib.core.exceptions.NoInputLayerException;
 import ru.alexander1248.nnlib.core.learning.teacher.BackPropagation;
 import ru.alexander1248.nnlib.core.learning.LearningRule;
+import ru.alexander1248.nnlib.core.learning.DataSet;
 import ru.alexander1248.nnlib.core.types.ActivationFunction;
 import ru.alexander1248.nnlib.core.types.ThreadingType;
 import ru.alexander1248.nnlib.core.types.WorkingType;
@@ -18,7 +19,7 @@ public class NeuralNetwork {
     protected final List<Layer> layers = new ArrayList<>();
     protected int inputSize = 0;
 
-    private LearningRule rule = new BackPropagation();
+    private LearningRule rule;
     public WorkingType workingType = Standard;
 
 
@@ -92,11 +93,11 @@ public class NeuralNetwork {
         rule.setNetwork(this);
     }
 
-    public void learn(DataSet dataSet) {
-        rule.learn(dataSet);
+    public void learn() {
+        rule.learn();
     }
-    public void learnInNewThread(DataSet dataSet) {
-        new Thread(() -> rule.learn(dataSet) ).start();
+    public void learnInNewThread() {
+        new Thread(() -> rule.learn() ).start();
     }
 
     public int getInputSize() {
