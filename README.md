@@ -12,7 +12,7 @@ Copy/Paste following code into your pom.xml file
 ```xml
 <repositories>
     <repository>
-        <id>fastnnlib-mvn-repo</id>
+        <id>fastnnlib</id>
         <url>https://raw.github.com/Alexander1248/FastNNLib/mvn-repo/</url>
     </repository>
 </repositories>
