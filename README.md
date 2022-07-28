@@ -3,6 +3,7 @@ FastNNLib
 FastNNLib is an open source Java neural network framework.
 It contains open source Java library which correspond to basic NN concepts. 
 It has been released as open source under the Apache 2.0 license.
+
 Adding Maven Dependency
 ======
 
@@ -28,6 +29,7 @@ Copy/Paste following code into your pom.xml file
         </dependency>
 </dependencies>
 ```
+
 Getting and Building from Sources using command line
 ======
 
