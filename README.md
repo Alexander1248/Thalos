@@ -14,10 +14,6 @@ Copy/Paste following code into your pom.xml file
     <repository>
         <id>fastnnlib-mvn-repo</id>
         <url>https://raw.github.com/Alexander1248/FastNNLib/mvn-repo/</url>
-        <snapshots>
-            <enabled>true</enabled>
-            <updatePolicy>always</updatePolicy>
-        </snapshots>
     </repository>
 </repositories>
     
