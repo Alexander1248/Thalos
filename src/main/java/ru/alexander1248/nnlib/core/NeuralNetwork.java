@@ -1,41 +1,42 @@
-package ru.alexander.nnlib;
+package ru.alexander1248.nnlib.core;
 
-import ru.alexander.nnlib.exceptions.EmptyNeuralNetworkException;
-import ru.alexander.nnlib.exceptions.NoInputLayerException;
-import ru.alexander.nnlib.learning.BackPropagation;
-import ru.alexander.nnlib.learning.LearningRule;
-import ru.alexander.nnlib.types.ActivationFunctionType;
-import ru.alexander.nnlib.types.ThreadingType;
-import ru.alexander.nnlib.types.WorkingType;
+import ru.alexander1248.nnlib.core.exceptions.EmptyNeuralNetworkException;
+import ru.alexander1248.nnlib.core.exceptions.NoInputLayerException;
+import ru.alexander1248.nnlib.core.learning.BackPropagation;
+import ru.alexander1248.nnlib.core.learning.LearningRule;
+import ru.alexander1248.nnlib.core.types.ActivationFunction;
+import ru.alexander1248.nnlib.core.types.ThreadingType;
+import ru.alexander1248.nnlib.core.types.WorkingType;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static ru.alexander1248.nnlib.core.types.WorkingType.Standard;
+
 public class NeuralNetwork {
-    private final List<Layer> layers = new ArrayList<>();
-    private int inputSize = 0;
+    protected final List<Layer> layers = new ArrayList<>();
+    protected int inputSize = 0;
 
     private LearningRule rule = new BackPropagation();
-
-    public WorkingType workingType = WorkingType.Standard;
+    public WorkingType workingType = Standard;
 
 
     public NeuralNetwork() {
         rule.setNetwork(this);
     }
 
-    public void addLayer(int size, ActivationFunctionType activationFunctionType, ThreadingType threadingType) {
+    public void addLayer(int size, ActivationFunction activationFunction, ThreadingType threadingType) {
         if (layers.isEmpty()) {
             if (inputSize == 0) inputSize = size;
-            else layers.add(new Layer(inputSize, size, threadingType, activationFunctionType));
+            else layers.add(new Layer(inputSize, size, threadingType, activationFunction));
         }
-        else layers.add(new Layer(layers.get(layers.size() - 1).getLayerSize(), size, threadingType, activationFunctionType));
+        else layers.add(new Layer(layers.get(layers.size() - 1).getLayerSize(), size, threadingType, activationFunction));
     }
-    public void addLayer(int size, ActivationFunctionType activationFunctionType) {
-        addLayer(size, activationFunctionType, ThreadingType.CPU);
+    public void addLayer(int size, ActivationFunction activationFunction) {
+        addLayer(size, activationFunction, ThreadingType.CPU);
     }
     public void addLayer(int size) {
-        addLayer(size, ActivationFunctionType.Sigmoid, ThreadingType.CPU);
+        addLayer(size, ActivationFunction.Sigmoid, ThreadingType.CPU);
     }
 
 
@@ -71,6 +72,10 @@ public class NeuralNetwork {
     public float[] getOutput() {
         return layers.get(layers.size() - 1).getOutput();
     }
+    public float[] getOutput(int layer) {
+        return layers.get(layer).getOutput();
+    }
+
 
     public List<Layer> getLayers() {
         return layers;

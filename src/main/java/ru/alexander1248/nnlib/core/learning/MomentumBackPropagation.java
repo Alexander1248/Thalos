@@ -1,16 +1,15 @@
-package ru.alexander.nnlib.learning;
+package ru.alexander1248.nnlib.core.learning;
 
 import com.aparapi.exception.CompileFailedException;
 import com.aparapi.internal.kernel.KernelManager;
-import ru.alexander.nnlib.Layer;
-import ru.alexander.nnlib.exceptions.EmptyNeuralNetworkException;
-import ru.alexander.nnlib.exceptions.NoInputLayerException;
-import ru.alexander.nnlib.DataSet;
-import ru.alexander.nnlib.kernels.AcceleratedWeightsKernel;
-import ru.alexander.nnlib.kernels.ErrorKernel;
-import ru.alexander.nnlib.kernels.ThreadKernel;
-import ru.alexander.nnlib.kernels.WeightsKernel;
-import ru.alexander.nnlib.types.ThreadingType;
+import ru.alexander1248.nnlib.core.Layer;
+import ru.alexander1248.nnlib.core.exceptions.EmptyNeuralNetworkException;
+import ru.alexander1248.nnlib.core.exceptions.NoInputLayerException;
+import ru.alexander1248.nnlib.core.DataSet;
+import ru.alexander1248.nnlib.core.kernels.AcceleratedWeightsKernel;
+import ru.alexander1248.nnlib.core.kernels.ErrorKernel;
+import ru.alexander1248.nnlib.core.kernels.ThreadKernel;
+import ru.alexander1248.nnlib.core.types.ThreadingType;
 
 import java.util.List;
 

@@ -1,7 +1,7 @@
-package ru.alexander.nnlib.learning;
+package ru.alexander1248.nnlib.core.learning;
 
-import ru.alexander.nnlib.NeuralNetwork;
-import ru.alexander.nnlib.DataSet;
+import ru.alexander1248.nnlib.core.NeuralNetwork;
+import ru.alexander1248.nnlib.core.DataSet;
 
 public abstract class LearningRule {
     protected NeuralNetwork network;

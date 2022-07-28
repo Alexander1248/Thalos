@@ -1,4 +1,4 @@
-package ru.alexander.nnlib.types;
+package ru.alexander1248.nnlib.core.types;
 
 public enum ThreadingType {
     CPU,

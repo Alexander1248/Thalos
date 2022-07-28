@@ -1,8 +1,7 @@
-package ru.alexander.nnlib.kernels;
+package ru.alexander1248.nnlib.core.kernels;
 
 
 import com.aparapi.Kernel;
-import ru.alexander.nnlib.Layer;
 
 public class ErrorKernel extends Kernel {
     public float weights[];

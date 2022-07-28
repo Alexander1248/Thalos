@@ -1,16 +1,12 @@
-package ru.alexander.nnlib;
+package ru.alexander1248.nnlib.core;
 
 import com.aparapi.Range;
-import com.aparapi.device.Device;
 import com.aparapi.exception.CompileFailedException;
 import com.aparapi.internal.kernel.KernelManager;
-import ru.alexander.nnlib.kernels.LayerKernel;
-import ru.alexander.nnlib.kernels.ThreadKernel;
-import ru.alexander.nnlib.types.ActivationFunctionType;
-import ru.alexander.nnlib.types.ThreadingType;
-
-import java.lang.reflect.Type;
-import java.util.List;
+import ru.alexander1248.nnlib.core.kernels.LayerKernel;
+import ru.alexander1248.nnlib.core.kernels.ThreadKernel;
+import ru.alexander1248.nnlib.core.types.ActivationFunction;
+import ru.alexander1248.nnlib.core.types.ThreadingType;
 
 public class Layer {
     private float[] input;
@@ -28,7 +24,7 @@ public class Layer {
     private ThreadKernel cpu;
     private LayerKernel gpu;
 
-    public Layer(int inputSize, int layerSize, ThreadingType threadingType, ActivationFunctionType activationFunctionType) {
+    public Layer(int inputSize, int layerSize, ThreadingType threadingType, ActivationFunction activationFunction) {
 
         this.inputSize = inputSize;
         biasWeights = new float[layerSize];
@@ -44,9 +40,9 @@ public class Layer {
         }
 
         int buff = -1;
-        ActivationFunctionType[] values = ActivationFunctionType.values();
+        ActivationFunction[] values = ActivationFunction.values();
         for (int i = 0; i < values.length; i++)
-            if (values[i] == activationFunctionType) {
+            if (values[i] == activationFunction) {
                 buff = i;
                 break;
             }

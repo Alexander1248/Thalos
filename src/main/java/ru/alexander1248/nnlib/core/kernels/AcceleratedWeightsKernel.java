@@ -1,4 +1,4 @@
-package ru.alexander.nnlib.kernels;
+package ru.alexander1248.nnlib.core.kernels;
 
 public class AcceleratedWeightsKernel extends WeightsKernel {
     public float acceleration[];
