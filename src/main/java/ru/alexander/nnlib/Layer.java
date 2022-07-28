@@ -58,7 +58,7 @@ public class Layer {
     public void setThreadingType(ThreadingType type) {
         this.type = type;
         switch (type) {
-            case CPU ->  cpu = new ThreadKernel(Runtime.getRuntime().availableProcessors() / 2) {
+            case CPU:  cpu = new ThreadKernel(Runtime.getRuntime().availableProcessors() / 2) {
                     @Override
                     public void run(int gid) {
                         weightedSum[gid] = biasWeights[gid];
@@ -80,7 +80,7 @@ public class Layer {
                         else if (afType == 6) output[gid] = weightedSum[gid] / (1 + (float)Math.exp(-weightedSum[gid]));
                     }
                 };
-            case GPU -> {
+            case GPU: {
                 gpu = new LayerKernel();
                 try {
                     gpu.compile(KernelManager.instance().getDefaultPreferences().getPreferredDevices(null).get(0));
@@ -93,8 +93,8 @@ public class Layer {
 
     public void calculate() {
         switch (type) {
-            case CPU -> cpu.execute(output.length);
-            case GPU -> {
+            case CPU: cpu.execute(output.length);
+            case GPU: {
                 gpu.input = input;
                 gpu.weights = weights;
                 gpu.biasWeights = biasWeights;

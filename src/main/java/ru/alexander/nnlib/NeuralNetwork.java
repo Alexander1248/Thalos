@@ -41,14 +41,14 @@ public class NeuralNetwork {
 
     public void calculate() {
         switch (workingType) {
-            case Standard -> {
+            case Standard: {
                 layers.get(0).calculate();
                 for (int i = 1; i < layers.size(); i++) {
                     layers.get(i).setInput(layers.get(i - 1).getOutput());
                     layers.get(i).calculate();
                 }
             }
-            case Impulse -> {
+            case Impulse: {
                 for (int i = layers.size() - 1; i >= 1; i--) {
                     layers.get(i).setInput(layers.get(i - 1).getOutput());
                     layers.get(i).calculate();
