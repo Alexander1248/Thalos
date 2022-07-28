@@ -6,7 +6,7 @@
 
     <groupId>ru.alexander1248</groupId>
     <artifactId>fastnnlib</artifactId>
-    <version>0.9.5</version>
+    <version>1.0.0</version>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -51,7 +51,7 @@
                     <includes><include>**/*</include></includes>
                     <repositoryName>FastNNLib</repositoryName> <!-- github repo name -->
                     <repositoryOwner>Alexander1248</repositoryOwner> <!-- organization or user name  -->
-                    <oauth2Token>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</oauth2Token>
+                    <oauth2Token>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</oauth2Token>
                 </configuration>
                 <executions> <!-- run site-maven-plugin's 'site' target as part of the build's normal 'deploy' phase -->
                     <execution>
