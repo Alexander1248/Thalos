@@ -2,6 +2,7 @@ package ru.alexander1248.nnlib.shell.networks;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Range;
 import ru.alexander1248.nnlib.core.NeuralNetwork;
 import ru.alexander1248.nnlib.core.exceptions.EmptyNeuralNetworkException;
 import ru.alexander1248.nnlib.core.exceptions.NoInputLayerException;
@@ -9,9 +10,11 @@ import ru.alexander1248.nnlib.core.types.ActivationFunction;
 import ru.alexander1248.nnlib.core.types.ThreadingType;
 
 public class ElmanNetwork extends NeuralNetwork {
-    public ElmanNetwork(ActivationFunction activationFunction,
-                        ThreadingType threadingType,
-                        int inputSize, int outputSize, int @NotNull ... hiddenSizes) {
+    public ElmanNetwork(@NotNull ActivationFunction activationFunction,
+                        @NotNull ThreadingType threadingType,
+                        @Range(from = 0, to = Integer.MAX_VALUE) int inputSize,
+                        @Range(from = 0, to = Integer.MAX_VALUE) int outputSize,
+                        int @NotNull ... hiddenSizes) {
         super();
         addLayer(inputSize + hiddenSizes[hiddenSizes.length - 1], activationFunction, threadingType);
         for (int i = 0; i < hiddenSizes.length; i++) addLayer(hiddenSizes[i], activationFunction, threadingType);

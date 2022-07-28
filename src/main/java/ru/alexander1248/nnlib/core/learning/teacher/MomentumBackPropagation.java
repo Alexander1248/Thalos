@@ -1,4 +1,4 @@
-package ru.alexander1248.nnlib.core.learning;
+package ru.alexander1248.nnlib.core.learning.teacher;
 
 import com.aparapi.exception.CompileFailedException;
 import com.aparapi.internal.kernel.KernelManager;
@@ -6,8 +6,8 @@ import ru.alexander1248.nnlib.core.Layer;
 import ru.alexander1248.nnlib.core.exceptions.EmptyNeuralNetworkException;
 import ru.alexander1248.nnlib.core.exceptions.NoInputLayerException;
 import ru.alexander1248.nnlib.core.DataSet;
-import ru.alexander1248.nnlib.core.kernels.AcceleratedWeightsKernel;
-import ru.alexander1248.nnlib.core.kernels.ErrorKernel;
+import ru.alexander1248.nnlib.core.kernels.learning.teacher.AcceleratedWeightsKernel;
+import ru.alexander1248.nnlib.core.kernels.learning.teacher.ErrorKernel;
 import ru.alexander1248.nnlib.core.kernels.ThreadKernel;
 import ru.alexander1248.nnlib.core.types.ThreadingType;
 
@@ -73,14 +73,14 @@ public class MomentumBackPropagation extends BackPropagation {
         }
 
         switch (workingType) {
-            case CPU: {
+            case ThreadingType.CPU: {
                 for (l = layers.size() - 2; l >= 0; l--) {
                     int layerSize = network.getLayers().get(l).getLayerSize();
                     error[l] = new float[layerSize];
                     cpuError.execute(layerSize);
                 }
             }
-            case GPU: {
+            case ThreadingType.GPU: {
                 for (l = layers.size() - 2; l >= 0; l--) {
                     int layerSize = network.getLayers().get(l).getLayerSize();
 
@@ -103,7 +103,7 @@ public class MomentumBackPropagation extends BackPropagation {
     }
     private void calculateWeights(List<Layer> layers, DataSet.DataSetRow row) {
         switch (workingType) {
-            case CPU: {
+            case ThreadingType.CPU: {
                 l = 0;
                 layerInput = row.input;
                 cpuWeights.execute(layers.get(0).getLayerSize());
@@ -113,7 +113,7 @@ public class MomentumBackPropagation extends BackPropagation {
                     cpuWeights.execute(layers.get(l).getLayerSize());
                 }
             }
-            case GPU: {
+            case ThreadingType.GPU: {
                 gpuWeights.weights = network.getLayers().get(0).getWeights();
                 gpuWeights.biasWeights = network.getLayers().get(0).getBiasWeights();
                 gpuWeights.input = row.input;
@@ -159,7 +159,7 @@ public class MomentumBackPropagation extends BackPropagation {
     public void setThreadingType(ThreadingType threadingType) {
         this.workingType = threadingType;
         switch (workingType) {
-            case CPU: {
+            case ThreadingType.CPU: {
                 cpuError = new ThreadKernel(Runtime.getRuntime().availableProcessors() / 2) {
                     @Override
                     public void run(int gid) {
@@ -192,7 +192,7 @@ public class MomentumBackPropagation extends BackPropagation {
                     }
                 };
             }
-            case GPU: {
+            case ThreadingType.GPU: {
                 gpuError = new ErrorKernel();
                 gpuWeights = new AcceleratedWeightsKernel();
 

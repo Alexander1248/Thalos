@@ -1,4 +1,4 @@
-package ru.alexander1248.nnlib.core.learning;
+package ru.alexander1248.nnlib.core.learning.teacher;
 
 import com.aparapi.exception.CompileFailedException;
 import com.aparapi.internal.kernel.KernelManager;
@@ -6,22 +6,15 @@ import ru.alexander1248.nnlib.core.Layer;
 import ru.alexander1248.nnlib.core.exceptions.EmptyNeuralNetworkException;
 import ru.alexander1248.nnlib.core.exceptions.NoInputLayerException;
 import ru.alexander1248.nnlib.core.DataSet;
-import ru.alexander1248.nnlib.core.kernels.ErrorKernel;
+import ru.alexander1248.nnlib.core.kernels.learning.teacher.ErrorKernel;
 import ru.alexander1248.nnlib.core.kernels.ThreadKernel;
-import ru.alexander1248.nnlib.core.kernels.WeightsKernel;
+import ru.alexander1248.nnlib.core.kernels.learning.teacher.WeightsKernel;
 import ru.alexander1248.nnlib.core.types.ThreadingType;
 
 import java.util.List;
 
-public class BackPropagation extends LearningRule {
-    protected float maxError = 0.01f;
-    protected long maxIterations = -1;
+public class BackPropagation extends TeacherLearning {
     protected float[][] error;
-    protected float totalError = Float.POSITIVE_INFINITY;
-    protected long iteration = 0;
-
-    protected ThreadingType workingType;
-
     protected ThreadKernel cpuError;
     protected ThreadKernel cpuWeights;
     protected ErrorKernel gpuError;
@@ -78,14 +71,14 @@ public class BackPropagation extends LearningRule {
         }
 
         switch (workingType) {
-            case CPU: {
+            case ThreadingType.CPU: {
                 for (l = layers.size() - 2; l >= 0; l--) {
                     int layerSize = network.getLayers().get(l).getLayerSize();
                     error[l] = new float[layerSize];
                     cpuError.execute(layerSize);
                 }
             }
-            case GPU: {
+            case ThreadingType.GPU: {
                 for (l = layers.size() - 2; l >= 0; l--) {
                     int layerSize = network.getLayers().get(l).getLayerSize();
 
@@ -108,7 +101,7 @@ public class BackPropagation extends LearningRule {
     }
     private void calculateWeights(List<Layer> layers, DataSet.DataSetRow row) {
         switch (workingType) {
-            case CPU: {
+            case ThreadingType.CPU: {
                 l = 0;
                 layerInput = row.input;
                 cpuWeights.execute(layers.get(0).getLayerSize());
@@ -118,7 +111,7 @@ public class BackPropagation extends LearningRule {
                     cpuWeights.execute(layers.get(l).getLayerSize());
                 }
             }
-            case GPU: {
+            case ThreadingType.GPU: {
                 gpuWeights.weights = network.getLayers().get(0).getWeights();
                 gpuWeights.biasWeights = network.getLayers().get(0).getBiasWeights();
                 gpuWeights.input = row.input;
@@ -153,32 +146,11 @@ public class BackPropagation extends LearningRule {
 
     }
 
-    public void setMaxError(float maxError) {
-        this.maxError = maxError;
-    }
-    public void setMaxIterations(long maxIterations) {
-        this.maxIterations = maxIterations;
-    }
-
-    public float getMaxError() {
-        return maxError;
-    }
-    public float getTotalError() {
-        return totalError;
-    }
-
-    public long getMaxIterations() {
-        return maxIterations;
-    }
-    public long getIteration() {
-        return iteration;
-    }
-
 
     public void setThreadingType(ThreadingType threadingType) {
         this.workingType = threadingType;
         switch (workingType) {
-            case CPU: {
+            case ThreadingType.CPU: {
                 cpuError = new ThreadKernel(Runtime.getRuntime().availableProcessors() / 2) {
                     @Override
                     public void run(int gid) {
@@ -196,6 +168,7 @@ public class BackPropagation extends LearningRule {
                         else if (layer.getAfType() == 4) error[l][gid] *= wsum > 0 ? 1 : 0;
                         else if (layer.getAfType() == 5) error[l][gid] *= wsum > 0 ? 1 : 0.01;
                         else if (layer.getAfType() == 6) error[l][gid] *= ((wsum + 1) * Math.exp(-wsum) + 1) / pow;
+                        else if (layer.getAfType() == 7) error[l][gid] *= 0;
                     }
                 };
 
@@ -209,7 +182,7 @@ public class BackPropagation extends LearningRule {
                     }
                 };
             }
-            case GPU: {
+            case ThreadingType.GPU: {
                 gpuError = new ErrorKernel();
                 gpuWeights = new WeightsKernel();
 

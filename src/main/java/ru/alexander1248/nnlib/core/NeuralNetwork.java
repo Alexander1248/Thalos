@@ -1,8 +1,9 @@
 package ru.alexander1248.nnlib.core;
 
+import org.jetbrains.annotations.Range;
 import ru.alexander1248.nnlib.core.exceptions.EmptyNeuralNetworkException;
 import ru.alexander1248.nnlib.core.exceptions.NoInputLayerException;
-import ru.alexander1248.nnlib.core.learning.BackPropagation;
+import ru.alexander1248.nnlib.core.learning.teacher.BackPropagation;
 import ru.alexander1248.nnlib.core.learning.LearningRule;
 import ru.alexander1248.nnlib.core.types.ActivationFunction;
 import ru.alexander1248.nnlib.core.types.ThreadingType;
@@ -25,17 +26,17 @@ public class NeuralNetwork {
         rule.setNetwork(this);
     }
 
-    public void addLayer(int size, ActivationFunction activationFunction, ThreadingType threadingType) {
+    public void addLayer(@Range(from = 0, to = Integer.MAX_VALUE) int size, ActivationFunction activationFunction, ThreadingType threadingType) {
         if (layers.isEmpty()) {
             if (inputSize == 0) inputSize = size;
             else layers.add(new Layer(inputSize, size, threadingType, activationFunction));
         }
         else layers.add(new Layer(layers.get(layers.size() - 1).getLayerSize(), size, threadingType, activationFunction));
     }
-    public void addLayer(int size, ActivationFunction activationFunction) {
+    public void addLayer(@Range(from = 0, to = Integer.MAX_VALUE) int size, ActivationFunction activationFunction) {
         addLayer(size, activationFunction, ThreadingType.CPU);
     }
-    public void addLayer(int size) {
+    public void addLayer(@Range(from = 0, to = Integer.MAX_VALUE) int size) {
         addLayer(size, ActivationFunction.Sigmoid, ThreadingType.CPU);
     }
 

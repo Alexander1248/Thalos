@@ -12,7 +12,9 @@ import java.util.Arrays;
 import java.util.stream.Stream;
 
 public class JordanNetwork extends NeuralNetwork {
-    public JordanNetwork(ActivationFunction activationFunction, ThreadingType threadingType, int @NotNull ... layers) {
+    public JordanNetwork(@NotNull ActivationFunction activationFunction,
+                         @NotNull ThreadingType threadingType,
+                         int @NotNull ... layers) {
         super();
         addLayer(layers[0] + layers[layers.length - 1], activationFunction, threadingType);
         for (int i = 1; i < layers.length; i++) addLayer(layers[i], activationFunction, threadingType);

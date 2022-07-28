@@ -1,4 +1,4 @@
-package ru.alexander1248.nnlib.core.kernels;
+package ru.alexander1248.nnlib.core.kernels.learning.teacher;
 
 
 import com.aparapi.Kernel;
@@ -27,5 +27,6 @@ public class ErrorKernel extends Kernel {
         else if (afType == 4) error[gid] *= weightedSum[gid] > 0 ? 1 : 0;
         else if (afType == 5) error[gid] *= weightedSum[gid] > 0 ? 1 : 0.01;
         else if (afType == 6) error[gid] *= ((weightedSum[gid] + 1) * Math.exp(-weightedSum[gid]) + 1) / Math.pow(1 + Math.exp(-weightedSum[gid]), 2);
+        else if (afType == 7) error[gid] *= 0;
     }
 }

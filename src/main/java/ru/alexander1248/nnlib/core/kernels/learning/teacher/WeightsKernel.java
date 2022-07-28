@@ -1,4 +1,4 @@
-package ru.alexander1248.nnlib.core.kernels;
+package ru.alexander1248.nnlib.core.kernels.learning.teacher;
 
 
 import com.aparapi.Kernel;

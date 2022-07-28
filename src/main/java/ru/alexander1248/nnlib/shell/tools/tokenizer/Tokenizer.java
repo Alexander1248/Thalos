@@ -4,5 +4,5 @@ import java.util.List;
 
 public interface Tokenizer {
     List<float[]> tokenize(String data);
-    String untokenize(List<float[]> data);
+    String detokenize(List<float[]> data);
 }

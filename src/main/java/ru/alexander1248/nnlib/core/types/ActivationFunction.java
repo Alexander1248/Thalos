@@ -9,5 +9,7 @@ public enum ActivationFunction {
 
     ReLU,
     LeakyReLU,
-    SiLU
+    SiLU,
+
+    Step
 }
