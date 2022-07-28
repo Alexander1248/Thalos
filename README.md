@@ -26,6 +26,17 @@ Copy/Paste following code into your pom.xml file
 </dependencies>
 ```
 
+Getting and Building from Sources using NetBeans
+======
+
+Click: Main Menu > Team > Git > Clone
+
+For Repository URL enter https://github.com/Alexander1248/FastNNLib.git
+
+Click Finish
+
+Right click cloned project, and click Build
+
 Getting and Building from Sources using command line
 ======
 
