@@ -13,12 +13,15 @@ import ru.alexander1248.nnlib.core.types.ThreadingType;
 
 import java.util.List;
 
+import static ru.alexander1248.nnlib.core.types.ThreadingType.CPU;
+import static ru.alexander1248.nnlib.core.types.ThreadingType.GPU;
+
 public class MomentumBackPropagation extends BackPropagation {
 
     private float momentum = 0;
     private float[][] acceleration;
     public MomentumBackPropagation() {
-        setThreadingType(ThreadingType.CPU);
+        setThreadingType(CPU);
     }
 
     @Override
@@ -73,14 +76,14 @@ public class MomentumBackPropagation extends BackPropagation {
         }
 
         switch (workingType) {
-            case ThreadingType.CPU: {
+            case CPU: {
                 for (l = layers.size() - 2; l >= 0; l--) {
                     int layerSize = network.getLayers().get(l).getLayerSize();
                     error[l] = new float[layerSize];
                     cpuError.execute(layerSize);
                 }
             }
-            case ThreadingType.GPU: {
+            case GPU: {
                 for (l = layers.size() - 2; l >= 0; l--) {
                     int layerSize = network.getLayers().get(l).getLayerSize();
 
@@ -103,7 +106,7 @@ public class MomentumBackPropagation extends BackPropagation {
     }
     private void calculateWeights(List<Layer> layers, DataSet.DataSetRow row) {
         switch (workingType) {
-            case ThreadingType.CPU: {
+            case CPU: {
                 l = 0;
                 layerInput = row.input;
                 cpuWeights.execute(layers.get(0).getLayerSize());
@@ -113,7 +116,7 @@ public class MomentumBackPropagation extends BackPropagation {
                     cpuWeights.execute(layers.get(l).getLayerSize());
                 }
             }
-            case ThreadingType.GPU: {
+            case GPU: {
                 gpuWeights.weights = network.getLayers().get(0).getWeights();
                 gpuWeights.biasWeights = network.getLayers().get(0).getBiasWeights();
                 gpuWeights.input = row.input;
@@ -159,7 +162,7 @@ public class MomentumBackPropagation extends BackPropagation {
     public void setThreadingType(ThreadingType threadingType) {
         this.workingType = threadingType;
         switch (workingType) {
-            case ThreadingType.CPU: {
+            case CPU: {
                 cpuError = new ThreadKernel(Runtime.getRuntime().availableProcessors() / 2) {
                     @Override
                     public void run(int gid) {
@@ -192,7 +195,7 @@ public class MomentumBackPropagation extends BackPropagation {
                     }
                 };
             }
-            case ThreadingType.GPU: {
+            case GPU: {
                 gpuError = new ErrorKernel();
                 gpuWeights = new AcceleratedWeightsKernel();
 

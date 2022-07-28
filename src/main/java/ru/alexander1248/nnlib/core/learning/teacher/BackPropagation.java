@@ -13,6 +13,9 @@ import ru.alexander1248.nnlib.core.types.ThreadingType;
 
 import java.util.List;
 
+import static ru.alexander1248.nnlib.core.types.ThreadingType.CPU;
+import static ru.alexander1248.nnlib.core.types.ThreadingType.GPU;
+
 public class BackPropagation extends TeacherLearning {
     protected float[][] error;
     protected ThreadKernel cpuError;
@@ -23,7 +26,7 @@ public class BackPropagation extends TeacherLearning {
     protected int l = 0;
     protected float[] layerInput;
     public BackPropagation() {
-        setThreadingType(ThreadingType.CPU);
+        setThreadingType(CPU);
     }
 
     @Override
@@ -71,14 +74,14 @@ public class BackPropagation extends TeacherLearning {
         }
 
         switch (workingType) {
-            case ThreadingType.CPU: {
+            case CPU: {
                 for (l = layers.size() - 2; l >= 0; l--) {
                     int layerSize = network.getLayers().get(l).getLayerSize();
                     error[l] = new float[layerSize];
                     cpuError.execute(layerSize);
                 }
             }
-            case ThreadingType.GPU: {
+            case GPU: {
                 for (l = layers.size() - 2; l >= 0; l--) {
                     int layerSize = network.getLayers().get(l).getLayerSize();
 
@@ -101,7 +104,7 @@ public class BackPropagation extends TeacherLearning {
     }
     private void calculateWeights(List<Layer> layers, DataSet.DataSetRow row) {
         switch (workingType) {
-            case ThreadingType.CPU: {
+            case CPU: {
                 l = 0;
                 layerInput = row.input;
                 cpuWeights.execute(layers.get(0).getLayerSize());
@@ -111,7 +114,7 @@ public class BackPropagation extends TeacherLearning {
                     cpuWeights.execute(layers.get(l).getLayerSize());
                 }
             }
-            case ThreadingType.GPU: {
+            case GPU: {
                 gpuWeights.weights = network.getLayers().get(0).getWeights();
                 gpuWeights.biasWeights = network.getLayers().get(0).getBiasWeights();
                 gpuWeights.input = row.input;
@@ -150,7 +153,7 @@ public class BackPropagation extends TeacherLearning {
     public void setThreadingType(ThreadingType threadingType) {
         this.workingType = threadingType;
         switch (workingType) {
-            case ThreadingType.CPU: {
+            case CPU: {
                 cpuError = new ThreadKernel(Runtime.getRuntime().availableProcessors() / 2) {
                     @Override
                     public void run(int gid) {
@@ -182,7 +185,7 @@ public class BackPropagation extends TeacherLearning {
                     }
                 };
             }
-            case ThreadingType.GPU: {
+            case GPU: {
                 gpuError = new ErrorKernel();
                 gpuWeights = new WeightsKernel();
 
