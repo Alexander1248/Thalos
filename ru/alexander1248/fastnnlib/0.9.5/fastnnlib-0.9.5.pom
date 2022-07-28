@@ -51,7 +51,7 @@
                     <includes><include>**/*</include></includes>
                     <repositoryName>FastNNLib</repositoryName> <!-- github repo name -->
                     <repositoryOwner>Alexander1248</repositoryOwner> <!-- organization or user name  -->
-                    <oauth2Token>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</oauth2Token>
+                    <oauth2Token>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</oauth2Token>
                 </configuration>
                 <executions> <!-- run site-maven-plugin's 'site' target as part of the build's normal 'deploy' phase -->
                     <execution>
