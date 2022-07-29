@@ -21,7 +21,7 @@ Copy/Paste following code into your pom.xml file
         <dependency>
             <groupId>ru.alexander1248</groupId>
             <artifactId>fastnnlib</artifactId>
-            <version>1.1.5</version>
+            <version>1.2.0</version>
         </dependency>
 </dependencies>
 ```
