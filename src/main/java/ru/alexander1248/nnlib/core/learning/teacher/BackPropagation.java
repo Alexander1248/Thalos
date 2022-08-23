@@ -175,7 +175,6 @@ public class BackPropagation extends TeacherLearning {
                         else if (layer.getAfType() == 5) error[l][gid] *= wsum > 0 ? 1 : 0.01;
                         else if (layer.getAfType() == 6) error[l][gid] *= ((wsum + 1) * Math.exp(-wsum) + 1) / pow;
                         else if (layer.getAfType() == 7) error[l][gid] *= 0;
-                        else if (layer.getAfType() == 8) error[l][gid] *= layer.getOutput()[gid] * (1 - layer.getOutput()[gid]);
                     }
                 };
 
