@@ -27,5 +27,6 @@ public class LayerKernel extends Kernel {
         else if (afType == 5) output[gid] = weightedSum[gid] > 0 ? weightedSum[gid] : 0.01f * weightedSum[gid];
         else if (afType == 6) output[gid] = weightedSum[gid] / (1 + (float)Math.exp(-weightedSum[gid]));
         else if (afType == 7) output[gid] = weightedSum[gid] > 0 ? 1 : 0;
+        else if (afType == 8) output[gid] = (float) Math.exp(weightedSum[gid]);
     }
 }

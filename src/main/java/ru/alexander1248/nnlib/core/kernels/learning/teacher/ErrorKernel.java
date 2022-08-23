@@ -6,6 +6,7 @@ import com.aparapi.Kernel;
 public class ErrorKernel extends Kernel {
     public float weights[];
     public float weightedSum[];
+    public float output[];
     public float error[];
     public float nextError[];
 
@@ -28,5 +29,6 @@ public class ErrorKernel extends Kernel {
         else if (afType == 5) error[gid] *= weightedSum[gid] > 0 ? 1 : 0.01;
         else if (afType == 6) error[gid] *= ((weightedSum[gid] + 1) * Math.exp(-weightedSum[gid]) + 1) / Math.pow(1 + Math.exp(-weightedSum[gid]), 2);
         else if (afType == 7) error[gid] *= 0;
+        else if (afType == 8) error[gid] *= output[gid] * (1 - output[gid]);
     }
 }

@@ -11,5 +11,6 @@ public enum ActivationFunction {
     LeakyReLU,
     SiLU,
 
-    Step
+    Step,
+    Softmax
 }

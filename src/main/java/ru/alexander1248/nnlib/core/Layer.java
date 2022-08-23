@@ -68,7 +68,8 @@ public class Layer {
                         else if (afType == 4) output[gid] = weightedSum[gid] > 0 ? weightedSum[gid] : 0;
                         else if (afType == 5) output[gid] = weightedSum[gid] > 0 ? weightedSum[gid] : 0.01f * weightedSum[gid];
                         else if (afType == 6) output[gid] = weightedSum[gid] / (1 + (float)Math.exp(-weightedSum[gid]));
-                        else if (afType == 7) output[gid] =  weightedSum[gid] > 0 ? 1 : 0;
+                        else if (afType == 7) output[gid] = weightedSum[gid] > 0 ? 1 : 0;
+                        else if (afType == 8) output[gid] = (float) Math.exp(weightedSum[gid]);
                     }
                 };
             case GPU: {
@@ -84,7 +85,9 @@ public class Layer {
 
     public void calculate() {
         switch (type) {
-            case CPU: cpu.execute(output.length);
+            case CPU: {
+                cpu.execute(output.length);
+            }
             case GPU: {
                 gpu.input = input;
                 gpu.weights = weights;
@@ -96,6 +99,11 @@ public class Layer {
                 weightedSum = gpu.weightedSum;
                 output = gpu.output;
             }
+        }
+        if (afType == 8) {
+            float sum = 0;
+            for (int i = 0; i < weightedSum.length; i++) sum = output[i];
+            for (int i = 0; i < weightedSum.length; i++) output[i] /= sum;
         }
     }
 

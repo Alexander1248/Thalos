@@ -70,6 +70,8 @@ public class BackPropagation extends TeacherLearning {
             else if (outLayer.getAfType() == 4) error[layers.size() - 1][current] *= wsum > 0 ? 1 : 0;
             else if (outLayer.getAfType() == 5) error[layers.size() - 1][current] *= wsum > 0 ? 1 : 0.01;
             else if (outLayer.getAfType() == 6) error[layers.size() - 1][current] *= ((wsum + 1) * Math.exp(-wsum) + 1) / pow;
+            else if (outLayer.getAfType() == 7) error[layers.size() - 1][current] *= 0;
+            else if (outLayer.getAfType() == 8) error[layers.size() - 1][current] *= outLayer.getOutput()[current] * (1 - outLayer.getOutput()[current]);
         }
 
         switch (workingType) {
@@ -86,6 +88,8 @@ public class BackPropagation extends TeacherLearning {
 
                     gpuError.weights = network.getLayers().get(l).getWeights();
                     gpuError.weightedSum = network.getLayers().get(l).getWeightedSum();
+                    gpuError.output = network.getLayers().get(l).getOutput();
+
                     gpuError.error = new float[layerSize];
                     gpuError.nextError = error[l + 1];
 
@@ -171,6 +175,7 @@ public class BackPropagation extends TeacherLearning {
                         else if (layer.getAfType() == 5) error[l][gid] *= wsum > 0 ? 1 : 0.01;
                         else if (layer.getAfType() == 6) error[l][gid] *= ((wsum + 1) * Math.exp(-wsum) + 1) / pow;
                         else if (layer.getAfType() == 7) error[l][gid] *= 0;
+                        else if (layer.getAfType() == 8) error[l][gid] *= layer.getOutput()[gid] * (1 - layer.getOutput()[gid]);
                     }
                 };
 
