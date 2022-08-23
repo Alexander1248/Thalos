@@ -59,7 +59,10 @@ public class BackPropagation extends TeacherLearning {
         error[layers.size() - 1] = new float[output.length];
 
         for (int current = 0; current < output.length; current++) {
-            error[layers.size() - 1][current] = (row.output[current] - output[current]);
+            if (outLayer.getAfType() == 8)
+                error[layers.size() - 1][current] = (row.output[current] - outLayer.getWeightedSum()[current]);
+            else error[layers.size() - 1][current] = (row.output[current] - output[current]);
+
             err += Math.abs(error[layers.size() - 1][current]);
 
             float wsum = outLayer.getWeightedSum()[current];
@@ -71,7 +74,6 @@ public class BackPropagation extends TeacherLearning {
             else if (outLayer.getAfType() == 5) error[layers.size() - 1][current] *= wsum > 0 ? 1 : 0.01;
             else if (outLayer.getAfType() == 6) error[layers.size() - 1][current] *= ((wsum + 1) * Math.exp(-wsum) + 1) / pow;
             else if (outLayer.getAfType() == 7) error[layers.size() - 1][current] *= 0;
-            else if (outLayer.getAfType() == 8) error[layers.size() - 1][current] *= outLayer.getOutput()[current] * (1 - outLayer.getOutput()[current]);
         }
 
         switch (workingType) {

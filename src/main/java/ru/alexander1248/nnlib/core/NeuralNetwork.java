@@ -23,10 +23,6 @@ public class NeuralNetwork {
     public WorkingType workingType = Standard;
 
 
-    public NeuralNetwork() {
-        rule.setNetwork(this);
-    }
-
     public void addLayer(@Range(from = 0, to = Integer.MAX_VALUE) int size, ActivationFunction activationFunction, ThreadingType threadingType) {
         if (layers.isEmpty()) {
             if (inputSize == 0) inputSize = size;
