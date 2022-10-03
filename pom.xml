@@ -6,7 +6,7 @@
 
     <groupId>ru.alexander1248</groupId>
     <artifactId>fastnnlib</artifactId>
-    <version>1.2.3</version>
+    <version>1.2.5</version>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -74,11 +74,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.aparapi</groupId>
-            <artifactId>aparapi</artifactId>
-            <version>3.0.0</version>
-        </dependency>
-        <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>3.12.0</version>
@@ -88,6 +83,17 @@
             <artifactId>annotations</artifactId>
             <version>23.0.0</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.aparapi</groupId>
+            <artifactId>aparapi</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>3.8.2</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

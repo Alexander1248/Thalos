@@ -11,9 +11,6 @@ import ru.alexander1248.nnlib.core.learning.teacher.TeacherLearning;
 import ru.alexander1248.nnlib.core.types.ActivationFunction;
 import ru.alexander1248.nnlib.core.types.ThreadingType;
 
-import java.util.Arrays;
-import java.util.stream.Stream;
-
 public class JordanNetwork extends NeuralNetwork {
     public JordanNetwork(@NotNull ActivationFunction activationFunction,
                          @NotNull ThreadingType threadingType,

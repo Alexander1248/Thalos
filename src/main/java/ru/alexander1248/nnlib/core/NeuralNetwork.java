@@ -3,9 +3,7 @@ package ru.alexander1248.nnlib.core;
 import org.jetbrains.annotations.Range;
 import ru.alexander1248.nnlib.core.exceptions.EmptyNeuralNetworkException;
 import ru.alexander1248.nnlib.core.exceptions.NoInputLayerException;
-import ru.alexander1248.nnlib.core.learning.teacher.BackPropagation;
 import ru.alexander1248.nnlib.core.learning.LearningRule;
-import ru.alexander1248.nnlib.core.learning.DataSet;
 import ru.alexander1248.nnlib.core.types.ActivationFunction;
 import ru.alexander1248.nnlib.core.types.ThreadingType;
 import ru.alexander1248.nnlib.core.types.WorkingType;
@@ -37,17 +35,25 @@ public class NeuralNetwork {
         addLayer(size, ActivationFunction.Sigmoid, ThreadingType.CPU);
     }
 
+    public NeuralNetwork clone() {
+        NeuralNetwork net = new NeuralNetwork();
+        for (Layer layer : layers) net.layers.add(layer.clone());
+        net.inputSize = inputSize;
+        net.rule = rule;
+        net.workingType = workingType;
+        return net;
+    }
 
     public void calculate() {
         switch (workingType) {
-            case Standard: {
+            case Standard -> {
                 layers.get(0).calculate();
                 for (int i = 1; i < layers.size(); i++) {
                     layers.get(i).setInput(layers.get(i - 1).getOutput());
                     layers.get(i).calculate();
                 }
             }
-            case Impulse: {
+            case Impulse -> {
                 for (int i = layers.size() - 1; i >= 1; i--) {
                     layers.get(i).setInput(layers.get(i - 1).getOutput());
                     layers.get(i).calculate();
@@ -93,7 +99,7 @@ public class NeuralNetwork {
         rule.learn();
     }
     public void learnInNewThread() {
-        new Thread(() -> rule.learn() ).start();
+        new Thread(() -> rule.learn()).start();
     }
 
     public int getInputSize() {

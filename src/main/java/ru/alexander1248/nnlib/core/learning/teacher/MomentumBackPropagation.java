@@ -75,14 +75,14 @@ public class MomentumBackPropagation extends BackPropagation {
         }
 
         switch (workingType) {
-            case CPU: {
+            case CPU:
                 for (l = layers.size() - 2; l >= 0; l--) {
                     int layerSize = network.getLayers().get(l).getLayerSize();
                     error[l] = new float[layerSize];
                     cpuError.execute(layerSize);
                 }
-            }
-            case GPU: {
+                break;
+            case GPU:
                 for (l = layers.size() - 2; l >= 0; l--) {
                     int layerSize = network.getLayers().get(l).getLayerSize();
 
@@ -99,46 +99,41 @@ public class MomentumBackPropagation extends BackPropagation {
 
                     error[l] = gpuError.error;
                 }
-            }
+                break;
         }
         return err;
     }
     private void calculateWeights(List<Layer> layers, DataSet.DataSetRow row) {
         switch (workingType) {
-            case CPU: {
+            case CPU -> {
                 l = 0;
                 layerInput = row.input;
                 cpuWeights.execute(layers.get(0).getLayerSize());
-
                 for (l = 1; l < layers.size(); l++) {
                     layerInput = layers.get(l - 1).getOutput();
                     cpuWeights.execute(layers.get(l).getLayerSize());
                 }
             }
-            case GPU: {
+            case GPU -> {
                 gpuWeights.weights = network.getLayers().get(0).getWeights();
                 gpuWeights.biasWeights = network.getLayers().get(0).getBiasWeights();
                 gpuWeights.input = row.input;
                 gpuWeights.error = error[0];
-                ((AcceleratedWeightsKernel)gpuWeights).acceleration = acceleration[0];
-                ((AcceleratedWeightsKernel)gpuWeights).momentum = momentum;
-
+                ((AcceleratedWeightsKernel) gpuWeights).acceleration = acceleration[0];
+                ((AcceleratedWeightsKernel) gpuWeights).momentum = momentum;
                 gpuWeights.layerSize = network.getLayers().get(0).getLayerSize();
                 gpuWeights.prevLayerSize = row.input.length;
                 gpuWeights.learningSpeed = getLearningSpeed();
-
                 gpuWeights.execute(gpuWeights.layerSize);
-
                 network.getLayers().get(0).setWeights(gpuWeights.weights);
                 network.getLayers().get(0).setBiasWeights(gpuWeights.biasWeights);
-
                 for (int l = 1; l < layers.size(); l++) {
                     gpuWeights.weights = network.getLayers().get(l).getWeights();
                     gpuWeights.biasWeights = network.getLayers().get(l).getBiasWeights();
                     gpuWeights.input = network.getLayers().get(l - 1).getOutput();
                     gpuWeights.error = error[l];
-                    ((AcceleratedWeightsKernel)gpuWeights).acceleration = acceleration[l];
-                    ((AcceleratedWeightsKernel)gpuWeights).momentum = momentum;
+                    ((AcceleratedWeightsKernel) gpuWeights).acceleration = acceleration[l];
+                    ((AcceleratedWeightsKernel) gpuWeights).momentum = momentum;
 
                     gpuWeights.layerSize = network.getLayers().get(l).getLayerSize();
                     gpuWeights.prevLayerSize = network.getLayers().get(l - 1).getLayerSize();
@@ -161,7 +156,7 @@ public class MomentumBackPropagation extends BackPropagation {
     public void setThreadingType(ThreadingType threadingType) {
         this.workingType = threadingType;
         switch (workingType) {
-            case CPU: {
+            case CPU -> {
                 cpuError = new ThreadKernel(Runtime.getRuntime().availableProcessors() / 2) {
                     @Override
                     public void run(int gid) {
@@ -175,13 +170,12 @@ public class MomentumBackPropagation extends BackPropagation {
                         double pow = Math.pow(1 + Math.exp(-wsum), 2);
                         if (layer.getAfType() == 1) error[l][gid] *= Math.exp(-wsum) / pow;
                         else if (layer.getAfType() == 2) error[l][gid] *= 2f * Math.exp(-wsum) / pow;
-                        else if (layer.getAfType() == 3) error[l][gid] *= 1f / (1f + (float)Math.exp(-wsum));
+                        else if (layer.getAfType() == 3) error[l][gid] *= 1f / (1f + (float) Math.exp(-wsum));
                         else if (layer.getAfType() == 4) error[l][gid] *= wsum > 0 ? 1 : 0;
                         else if (layer.getAfType() == 5) error[l][gid] *= wsum > 0 ? 1 : 0.01;
                         else if (layer.getAfType() == 6) error[l][gid] *= ((wsum + 1) * Math.exp(-wsum) + 1) / pow;
                     }
                 };
-
                 cpuWeights = new ThreadKernel(Runtime.getRuntime().availableProcessors() / 2) {
                     @Override
                     public void run(int gid) {
@@ -194,10 +188,9 @@ public class MomentumBackPropagation extends BackPropagation {
                     }
                 };
             }
-            case GPU: {
+            case GPU -> {
                 gpuError = new ErrorKernel();
                 gpuWeights = new AcceleratedWeightsKernel();
-
                 try {
                     gpuError.compile(KernelManager.instance().getDefaultPreferences().getPreferredDevices(null).get(0));
                     gpuWeights.compile(KernelManager.instance().getDefaultPreferences().getPreferredDevices(null).get(0));
