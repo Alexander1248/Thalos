@@ -24,7 +24,7 @@ public class NNDrawer {
             h = Math.max(h, layers.get(i).getLayerSize());
             if (i > 0) w = Math.max(w, Math.abs(layers.get(i).getLayerSize() - layers.get(i - 1).getLayerSize()));
         }
-        w = 20 + w * 5;
+        w = 30 + w * 5;
 
         BufferedImage image = new BufferedImage((int) ((network.getLayers().size() + 1.5) * w), h * 30 + 60, BufferedImage.TYPE_3BYTE_BGR);
         Graphics g = image.getGraphics();
@@ -87,7 +87,7 @@ public class NNDrawer {
             h = Math.max(h, layers.get(i).getLayerSize());
             if (i > 0) w = Math.max(w, Math.abs(layers.get(i).getLayerSize() - layers.get(i - 1).getLayerSize()));
         }
-        w = 20 + w * 5;
+        w = 30 + w * 5;
 
         BufferedImage image = new BufferedImage((int) ((network.getLayers().size() + 1.5) * w), h * 30 + 60, BufferedImage.TYPE_3BYTE_BGR);
         Graphics g = image.getGraphics();
@@ -98,7 +98,7 @@ public class NNDrawer {
             int s = layers.get(size - 2).getLayerSize();
             for (int j = 0; j < s; j++) {
                 float gr = (float) (1 / (1 + Math.exp(layers.get(size - 1).getWeights()[i * s + j])));
-                g.setColor(new Color(gr, gr, gr));
+                g.setColor(new Color(1 - gr, gr, 0));
                 g.drawLine((int) (10 + (size + 0.5) * w), (int) (40 + (shiftCurr + i) * 30), (int) (10 + (size - 0.5) * w), (int) (40 + (shiftPrev + j) * 30));
             }
         }
@@ -111,7 +111,7 @@ public class NNDrawer {
                 int s = layers.get(j - 1).getLayerSize();
                 for (int k = 0; k < layers.get(j - 1).getLayerSize(); k++) {
                     float gr = (float) (1 / (1 + Math.exp(layers.get(j).getWeights()[i * s + k])));
-                    g.setColor(new Color(gr, gr, gr));
+                    g.setColor(new Color(1 - gr, gr, 0));
                     g.drawLine((int) (10 + (j + 1.5) * w), (int) (40 + (shiftCurr + i) * 30), (int) (10 + (j + 0.5) * w), (int) (40 + (shiftPrev + k) * 30));
                 }
             }
@@ -123,7 +123,7 @@ public class NNDrawer {
             int s = network.getInputSize();
             for (int k = 0; k < s; k++) {
                 float gr = (float) (1 / (1 + Math.exp(layers.get(0).getWeights()[i * s + k])));
-                g.setColor(new Color(gr, gr, gr));
+                g.setColor(new Color(1 - gr, gr, 0));
                 g.drawLine((int) (10 + w * 1.5f), (int) (40 + (shiftCurr + i) * 30), (int) (10 + w * 0.5), (int) (40 + (shiftPrev + k) * 30));
             }
         }
