@@ -1,4 +1,4 @@
-package ru.alexander1248.nnlib.shell;
+package ru.alexander1248.nnlib.shell.tools;
 
 import ru.alexander1248.nnlib.core.Layer;
 import ru.alexander1248.nnlib.core.NeuralNetwork;
