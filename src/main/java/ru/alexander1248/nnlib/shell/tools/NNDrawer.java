@@ -1,6 +1,6 @@
 package ru.alexander1248.nnlib.shell.tools;
 
-import ru.alexander1248.nnlib.core.Layer;
+import ru.alexander1248.nnlib.core.layers.Layer;
 import ru.alexander1248.nnlib.core.NeuralNetwork;
 
 import java.awt.*;

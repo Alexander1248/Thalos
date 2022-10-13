@@ -2,7 +2,7 @@ package ru.alexander1248.nnlib.core.learning.teacher;
 
 import com.aparapi.exception.CompileFailedException;
 import com.aparapi.internal.kernel.KernelManager;
-import ru.alexander1248.nnlib.core.Layer;
+import ru.alexander1248.nnlib.core.layers.Layer;
 import ru.alexander1248.nnlib.core.exceptions.EmptyNeuralNetworkException;
 import ru.alexander1248.nnlib.core.exceptions.NoInputLayerException;
 import ru.alexander1248.nnlib.core.kernels.learning.teacher.ErrorKernel;

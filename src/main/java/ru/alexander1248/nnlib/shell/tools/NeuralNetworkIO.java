@@ -2,9 +2,8 @@ package ru.alexander1248.nnlib.shell.tools;
 
 import com.google.gson.Gson;
 import org.jetbrains.annotations.NotNull;
-import ru.alexander1248.nnlib.core.Layer;
+import ru.alexander1248.nnlib.core.layers.Layer;
 import ru.alexander1248.nnlib.core.NeuralNetwork;
-import scala.Int;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -57,6 +56,7 @@ public class NeuralNetworkIO {
 
         Inflater inflater = new Inflater();
         inflater.setInput(bytes);
+        bytes = new byte[bytes.length * 4];
         int len = inflater.inflate(bytes);
         Gson gson = new Gson();
         return gson.fromJson(new String(Arrays.copyOf(bytes, len), StandardCharsets.UTF_8), NeuralNetwork.class);

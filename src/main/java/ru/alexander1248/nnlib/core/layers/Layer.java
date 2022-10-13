@@ -1,43 +1,37 @@
-package ru.alexander1248.nnlib.core;
+package ru.alexander1248.nnlib.core.layers;
 
 import com.aparapi.Range;
 import com.aparapi.exception.CompileFailedException;
 import com.aparapi.internal.kernel.KernelManager;
-import ru.alexander1248.nnlib.core.kernels.LayerKernel;
+import ru.alexander1248.nnlib.core.kernels.layers.LayerKernel;
 import ru.alexander1248.nnlib.core.kernels.ThreadKernel;
 import ru.alexander1248.nnlib.core.types.ActivationFunction;
 import ru.alexander1248.nnlib.core.types.ThreadingType;
 
 public class Layer {
-    private float[] input;
-    private float[] weights;
-    private float[] biasWeights;
-    private final int inputSize;
-    private float[] weightedSum;
-    private float[] output;
-    private final int layerSize;
+    protected float[] input;
+    protected float[] weights;
+    protected float[] biasWeights;
+    protected final int inputSize;
+    protected float[] weightedSum;
+    protected float[] output;
+    protected final int layerSize;
 
-    private final int afType;
+    protected final int afType;
 
-    private ThreadingType type;
+    protected ThreadingType type;
 
-    private ThreadKernel cpu;
-    private LayerKernel gpu;
+    protected ThreadKernel cpu;
+    protected LayerKernel gpu;
 
     public Layer(int inputSize, int layerSize, ThreadingType threadingType, ActivationFunction activationFunction) {
 
         this.inputSize = inputSize;
-        biasWeights = new float[layerSize];
         weightedSum = new float[layerSize];
         output = new float[layerSize];
         this.layerSize = layerSize;
 
-        weights = new float[inputSize * layerSize];
-        for (int i = 0; i < layerSize; i++) {
-            for (int j = 0; j < inputSize; j++)
-                weights[i * inputSize + j] = (float) (Math.random() * 2 - 1);
-            biasWeights[i] = (float) (Math.random() * 2 - 1);
-        }
+       generateWeights();
 
         int buff = -1;
         ActivationFunction[] values = ActivationFunction.values();
@@ -49,6 +43,16 @@ public class Layer {
         afType = buff;
 
         setThreadingType(threadingType);
+    }
+
+    protected void generateWeights() {
+        biasWeights = new float[layerSize];
+        weights = new float[inputSize * layerSize];
+        for (int i = 0; i < layerSize; i++) {
+            for (int j = 0; j < inputSize; j++)
+                weights[i * inputSize + j] = (float) (Math.random() * 2 - 1) * 5;
+            biasWeights[i] = (float) (Math.random() * 2 - 1) * 5;
+        }
     }
 
     public Layer clone() {

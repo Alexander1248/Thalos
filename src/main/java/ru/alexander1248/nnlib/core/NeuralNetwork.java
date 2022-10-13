@@ -3,6 +3,7 @@ package ru.alexander1248.nnlib.core;
 import org.jetbrains.annotations.Range;
 import ru.alexander1248.nnlib.core.exceptions.EmptyNeuralNetworkException;
 import ru.alexander1248.nnlib.core.exceptions.NoInputLayerException;
+import ru.alexander1248.nnlib.core.layers.Layer;
 import ru.alexander1248.nnlib.core.learning.LearningRule;
 import ru.alexander1248.nnlib.core.types.ActivationFunction;
 import ru.alexander1248.nnlib.core.types.ThreadingType;
