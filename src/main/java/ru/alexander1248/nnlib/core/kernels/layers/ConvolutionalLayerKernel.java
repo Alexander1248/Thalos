@@ -6,23 +6,26 @@ import com.aparapi.Kernel;
 public class ConvolutionalLayerKernel extends LayerKernel {
 
     public int matrixSize;
-    public int width;
-    public int height;
+    public int widthIn;
+    public int heightIn;
+
+    public int widthOut;
+    public int heightOut;
 
     public void run() {
         int gid = getGlobalId();
 
         int matrixHalf = matrixSize / 2;
-        int x = gid % width;
-        int y = gid / width;
+        int x = gid % widthOut + (widthIn - widthOut) / 2;
+        int y = gid / widthOut + (heightIn - heightOut) / 2;
 
         weightedSum[gid] = biasWeights[gid];
         for (int dy = 0; dy < matrixSize; dy++)
             for (int dx = 0; dx < matrixSize; dx++) {
                 int px = x + dx - matrixHalf;
                 int py = y + dy - matrixHalf;
-                if (px >= 0 && px < width && py >= 0 && py < height)
-                    weightedSum[gid] += input[py * width + px] * weights[(gid * matrixSize + dy) * matrixSize + dx];
+                if (px >= 0 && px < widthIn && py >= 0 && py < heightIn)
+                    weightedSum[gid] += input[py * widthIn + px] * weights[(gid * matrixSize + dy) * matrixSize + dx];
             }
 
         if (afType == 0) output[gid] = weightedSum[gid];

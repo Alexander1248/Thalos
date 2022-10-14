@@ -9,14 +9,19 @@ import ru.alexander1248.nnlib.core.types.ActivationFunction;
 import ru.alexander1248.nnlib.core.types.ThreadingType;
 
 public class ConvolutionalLayer extends Layer {
-    private final int width;
-    private final int height;
+    private final int widthIn;
+    private final int heightIn;
+
+    private final int widthOut;
+    private final int heightOut;
     private final int convolutionalMatrixSize;
 
-    public ConvolutionalLayer(int inputSize, int width, int height, int sideSize, ThreadingType threadingType, ActivationFunction activationFunction) {
-        super(inputSize, width * height, threadingType, activationFunction);
-        this.width = width;
-        this.height = height;
+    public ConvolutionalLayer(int widthIn, int heightIn, int widthOut, int heightOut, int sideSize, ThreadingType threadingType, ActivationFunction activationFunction) {
+        super(widthIn * heightIn, widthOut * heightOut, threadingType, activationFunction);
+        this.widthIn = widthIn;
+        this.heightIn = heightIn;
+        this.widthOut = widthOut;
+        this.heightOut = heightOut;
         this.convolutionalMatrixSize = sideSize;
     }
 
@@ -40,16 +45,16 @@ public class ConvolutionalLayer extends Layer {
                 @Override
                 public void run(int gid) {
                     weightedSum[gid] = biasWeights[gid];
-                    int x = gid % width;
-                    int y = gid / width;
+                    int x = gid % widthOut + (widthIn - widthOut) / 2;
+                    int y = gid / widthOut + (heightIn - heightOut) / 2;
                     int matrixHalf = convolutionalMatrixSize / 2;
 
                     for (int dy = 0; dy < convolutionalMatrixSize; dy++)
                         for (int dx = 0; dx < convolutionalMatrixSize; dx++) {
                             int px = x + dx - matrixHalf;
                             int py = y + dy - matrixHalf;
-                            if (px >= 0 && px < width && py >= 0 && py < height)
-                                weightedSum[gid] += input[py * width + px] * weights[(gid * convolutionalMatrixSize + dy) * convolutionalMatrixSize + dx];
+                            if (px >= 0 && px < widthIn && py >= 0 && py < heightIn)
+                                weightedSum[gid] += input[py * widthIn + px] * weights[(gid * convolutionalMatrixSize + dy) * convolutionalMatrixSize + dx];
                         }
 
                     if (afType == 0) output[gid] = weightedSum[gid];
@@ -88,8 +93,10 @@ public class ConvolutionalLayer extends Layer {
                 cgpu.weightedSum = weightedSum;
                 cgpu.output = output;
                 cgpu.matrixSize = convolutionalMatrixSize;
-                cgpu.width = width;
-                cgpu.height = height;
+                cgpu.widthIn = widthIn;
+                cgpu.heightIn = heightIn;
+                cgpu.widthOut = widthOut;
+                cgpu.heightOut = heightOut;
                 cgpu.execute(Range.create(output.length));
                 weightedSum = cgpu.weightedSum;
                 output = cgpu.output;
