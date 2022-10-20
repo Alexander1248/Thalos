@@ -59,7 +59,7 @@
                     <outputDirectory>${project.build.directory}/mvn-repo</outputDirectory>
                     <branch>refs/heads/mvn-repo</branch>
                     <includes><include>**/*</include></includes>
-                    <repositoryName>FastNNLib</repositoryName>
+                    <repositoryName>Thalos</repositoryName>
                     <repositoryOwner>Alexander1248</repositoryOwner>
                 </configuration>
                 <executions>
