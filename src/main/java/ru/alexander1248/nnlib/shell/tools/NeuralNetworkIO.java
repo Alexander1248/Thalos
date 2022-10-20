@@ -2,8 +2,8 @@ package ru.alexander1248.nnlib.shell.tools;
 
 import com.google.gson.Gson;
 import org.jetbrains.annotations.NotNull;
-import ru.alexander1248.nnlib.core.layers.Layer;
-import ru.alexander1248.nnlib.core.NeuralNetwork;
+import ru.alexander1248.nnlib.core.fastnn.layers.Layer;
+import ru.alexander1248.nnlib.core.fastnn.NeuralNetwork;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;

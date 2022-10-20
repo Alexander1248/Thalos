@@ -4,6 +4,7 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 public class SimpleValueProximityTokenizer implements Tokenizer {
@@ -25,7 +26,22 @@ public class SimpleValueProximityTokenizer implements Tokenizer {
         return tokens.stream().filter(t -> t.value.equals(value)).findAny().orElse(null);
     }
     public Token getTokenByKey(float[] key) {
-        return tokens.stream().filter(t -> Arrays.equals(t.key, key)).findAny().orElse(null);
+        double minDst = 0;
+        Token minTok = null;
+        for (int i = 0; i < tokens.size(); i++) {
+            double dst = 0;
+            double len = 0;
+            for (int j = 0; j < Token.tokenKeySize; j++) {
+                dst += key[i] * tokens.get(i).key[i];
+                len += Math.pow(tokens.get(i).key[i], 2);
+            }
+            dst /= Math.sqrt(len);
+            if (minTok == null || Math.abs(dst) < Math.abs(minDst)) {
+                minTok = tokens.get(i);
+                minDst = dst;
+            }
+        }
+        return minTok;
     }
 
     @Override

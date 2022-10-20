@@ -1,10 +1,10 @@
-package ru.alexander1248.nnlib.core.layers;
+package ru.alexander1248.nnlib.core.fastnn.layers;
 
 import com.aparapi.Range;
 import com.aparapi.exception.CompileFailedException;
 import com.aparapi.internal.kernel.KernelManager;
-import ru.alexander1248.nnlib.core.kernels.layers.LayerKernel;
-import ru.alexander1248.nnlib.core.kernels.ThreadKernel;
+import ru.alexander1248.nnlib.core.fastnn.kernels.layers.LayerKernel;
+import ru.alexander1248.nnlib.core.fastnn.kernels.ThreadKernel;
 import ru.alexander1248.nnlib.core.types.ActivationFunction;
 import ru.alexander1248.nnlib.core.types.ThreadingType;
 

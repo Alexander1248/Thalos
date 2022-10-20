@@ -1,10 +1,10 @@
-package ru.alexander1248.nnlib.core;
+package ru.alexander1248.nnlib.core.fastnn;
 
 import org.jetbrains.annotations.Range;
 import ru.alexander1248.nnlib.core.exceptions.EmptyNeuralNetworkException;
 import ru.alexander1248.nnlib.core.exceptions.NoInputLayerException;
-import ru.alexander1248.nnlib.core.layers.Layer;
-import ru.alexander1248.nnlib.core.learning.LearningRule;
+import ru.alexander1248.nnlib.core.fastnn.layers.Layer;
+import ru.alexander1248.nnlib.core.fastnn.learning.LearningRule;
 import ru.alexander1248.nnlib.core.types.ActivationFunction;
 import ru.alexander1248.nnlib.core.types.ThreadingType;
 import ru.alexander1248.nnlib.core.types.WorkingType;

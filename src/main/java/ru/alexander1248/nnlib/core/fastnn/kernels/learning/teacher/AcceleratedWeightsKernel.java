@@ -1,4 +1,4 @@
-package ru.alexander1248.nnlib.core.kernels.learning.teacher;
+package ru.alexander1248.nnlib.core.fastnn.kernels.learning.teacher;
 
 public class AcceleratedWeightsKernel extends WeightsKernel {
     public float acceleration[];

@@ -1,14 +1,14 @@
-package ru.alexander1248.nnlib.core.learning.teacher;
+package ru.alexander1248.nnlib.core.fastnn.learning.teacher;
 
 import com.aparapi.exception.CompileFailedException;
 import com.aparapi.internal.kernel.KernelManager;
-import ru.alexander1248.nnlib.core.layers.Layer;
+import ru.alexander1248.nnlib.core.fastnn.layers.Layer;
 import ru.alexander1248.nnlib.core.exceptions.EmptyNeuralNetworkException;
 import ru.alexander1248.nnlib.core.exceptions.NoInputLayerException;
-import ru.alexander1248.nnlib.core.kernels.learning.teacher.ErrorKernel;
-import ru.alexander1248.nnlib.core.kernels.ThreadKernel;
-import ru.alexander1248.nnlib.core.kernels.learning.teacher.WeightsKernel;
-import ru.alexander1248.nnlib.core.learning.DataSet;
+import ru.alexander1248.nnlib.core.fastnn.kernels.learning.teacher.ErrorKernel;
+import ru.alexander1248.nnlib.core.fastnn.kernels.ThreadKernel;
+import ru.alexander1248.nnlib.core.fastnn.kernels.learning.teacher.WeightsKernel;
+import ru.alexander1248.nnlib.core.fastnn.learning.DataSet;
 import ru.alexander1248.nnlib.core.types.ThreadingType;
 
 import java.util.List;

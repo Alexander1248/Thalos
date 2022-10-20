@@ -1,7 +1,5 @@
-package ru.alexander1248.nnlib.core.kernels.layers;
+package ru.alexander1248.nnlib.core.fastnn.kernels.layers;
 
-
-import com.aparapi.Kernel;
 
 public class ConvolutionalLayerKernel extends LayerKernel {
 

@@ -1,6 +1,6 @@
-package ru.alexander1248.nnlib.core.learning;
+package ru.alexander1248.nnlib.core.fastnn.learning;
 
-import ru.alexander1248.nnlib.core.NeuralNetwork;
+import ru.alexander1248.nnlib.core.fastnn.NeuralNetwork;
 import ru.alexander1248.nnlib.core.types.ThreadingType;
 
 public abstract class LearningRule {

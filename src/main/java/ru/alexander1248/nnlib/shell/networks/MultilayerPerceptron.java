@@ -1,10 +1,10 @@
 package ru.alexander1248.nnlib.shell.networks;
 
 import org.jetbrains.annotations.NotNull;
-import ru.alexander1248.nnlib.core.NeuralNetwork;
-import ru.alexander1248.nnlib.core.learning.DataSet;
-import ru.alexander1248.nnlib.core.learning.teacher.BackPropagation;
-import ru.alexander1248.nnlib.core.learning.teacher.TeacherLearning;
+import ru.alexander1248.nnlib.core.fastnn.NeuralNetwork;
+import ru.alexander1248.nnlib.core.fastnn.learning.DataSet;
+import ru.alexander1248.nnlib.core.fastnn.learning.teacher.BackPropagation;
+import ru.alexander1248.nnlib.core.fastnn.learning.teacher.TeacherLearning;
 import ru.alexander1248.nnlib.core.types.ActivationFunction;
 import ru.alexander1248.nnlib.core.types.ThreadingType;
 

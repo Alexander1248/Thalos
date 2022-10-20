@@ -1,4 +1,4 @@
-package ru.alexander1248.nnlib.core.kernels;
+package ru.alexander1248.nnlib.core.fastnn.kernels;
 
 public abstract class ThreadKernel {
     private Thread[] threads;

@@ -1,10 +1,10 @@
-package ru.alexander1248.nnlib.core.layers;
+package ru.alexander1248.nnlib.core.fastnn.layers;
 
 import com.aparapi.Range;
 import com.aparapi.exception.CompileFailedException;
 import com.aparapi.internal.kernel.KernelManager;
-import ru.alexander1248.nnlib.core.kernels.ThreadKernel;
-import ru.alexander1248.nnlib.core.kernels.layers.ConvolutionalLayerKernel;
+import ru.alexander1248.nnlib.core.fastnn.kernels.ThreadKernel;
+import ru.alexander1248.nnlib.core.fastnn.kernels.layers.ConvolutionalLayerKernel;
 import ru.alexander1248.nnlib.core.types.ActivationFunction;
 import ru.alexander1248.nnlib.core.types.ThreadingType;
 
@@ -107,5 +107,25 @@ public class ConvolutionalLayer extends Layer {
             for (int i = 0; i < weightedSum.length; i++) sum = output[i];
             for (int i = 0; i < weightedSum.length; i++) output[i] /= sum;
         }
+    }
+
+    public int getWidthIn() {
+        return widthIn;
+    }
+
+    public int getHeightIn() {
+        return heightIn;
+    }
+
+    public int getWidthOut() {
+        return widthOut;
+    }
+
+    public int getHeightOut() {
+        return heightOut;
+    }
+
+    public int getConvolutionalMatrixSize() {
+        return convolutionalMatrixSize;
     }
 }

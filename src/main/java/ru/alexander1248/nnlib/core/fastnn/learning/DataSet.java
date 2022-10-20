@@ -1,4 +1,4 @@
-package ru.alexander1248.nnlib.core.learning;
+package ru.alexander1248.nnlib.core.fastnn.learning;
 
 import java.util.ArrayList;
 import java.util.Arrays;

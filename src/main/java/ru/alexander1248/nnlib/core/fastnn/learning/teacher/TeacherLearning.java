@@ -1,7 +1,7 @@
-package ru.alexander1248.nnlib.core.learning.teacher;
+package ru.alexander1248.nnlib.core.fastnn.learning.teacher;
 
-import ru.alexander1248.nnlib.core.learning.DataSet;
-import ru.alexander1248.nnlib.core.learning.LearningRule;
+import ru.alexander1248.nnlib.core.fastnn.learning.DataSet;
+import ru.alexander1248.nnlib.core.fastnn.learning.LearningRule;
 
 public abstract class TeacherLearning extends LearningRule {
     private float learningSpeed = 0.1f;
