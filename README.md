@@ -21,8 +21,8 @@ Copy/Paste following code into your pom.xml file
 <dependencies>
         <dependency>
             <groupId>ru.alexander1248</groupId>
-            <artifactId>fastnnlib</artifactId>
-            <version>1.2.0</version>
+            <artifactId>thalos</artifactId>
+            <version>1.5.0</version>
         </dependency>
 </dependencies>
 ```
