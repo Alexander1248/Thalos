@@ -8,7 +8,7 @@ It has been released as open source under the Apache 2.0 license.
 Adding Maven Dependency
 ======
 
-Copy/Paste following code into your pom.xml file
+Copy/Paste following code into your pom.xml file.
 Up to version 1.5.0:
 
 ```xml
