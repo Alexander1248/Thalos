@@ -1,19 +1,23 @@
 package ru.alexander1248.nnlib.core.customnn;
 
+import ru.alexander1248.nnlib.core.customnn.neurons.InputNeuron;
 import ru.alexander1248.nnlib.core.customnn.neurons.Neuron;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class CustomNeuralNetwork {
-    public List<List<Neuron>> layers = new ArrayList<>();
+    private List<List<Neuron>> layers = new ArrayList<>();
+
+    private List<InputNeuron> inputs = new ArrayList<>();
+    private List<Neuron> outputs = new ArrayList<>();
 
     public void add(Neuron neuron) {
         for (int i = 0; i < layers.size(); i++) {
             for (Neuron n : layers.get(i)) {
                 for (Connection connection : n.getInput())
-                    if (connection.getData().getClass().getSuperclass() == Neuron.class
-                            && connection.getData() == neuron) {
+                    if (connection.getNeuron().getClass().getSuperclass() == Neuron.class
+                            && connection.getNeuron() == neuron) {
                         if (i == 0) {
                             ArrayList<Neuron> list = new ArrayList<>();
                             list.add(neuron);
@@ -22,8 +26,8 @@ public class CustomNeuralNetwork {
                     }
 
                 for (Connection connection : neuron.getInput())
-                    if (connection.getData().getClass().getSuperclass() == Neuron.class
-                            && connection.getData() == n) {
+                    if (connection.getNeuron().getClass().getSuperclass() == Neuron.class
+                            && connection.getNeuron() == n) {
                         if (i == layers.size()) {
                             ArrayList<Neuron> list = new ArrayList<>();
                             list.add(neuron);
@@ -39,5 +43,17 @@ public class CustomNeuralNetwork {
         for (List<Neuron> layer : layers)
             for (Neuron neuron : layer)
                 neuron.calculate();
+    }
+
+    public List<List<Neuron>> getLayers() {
+        return layers;
+    }
+
+    public List<InputNeuron> getInputs() {
+        return inputs;
+    }
+
+    public List<Neuron> getOutputs() {
+        return outputs;
     }
 }

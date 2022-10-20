@@ -8,7 +8,7 @@ import java.util.List;
 public abstract class Neuron {
     private List<Connection> input = new ArrayList<>();
 
-    private double output;
+    protected double output = 0;
 
     public double getOutput() {
         return output;
