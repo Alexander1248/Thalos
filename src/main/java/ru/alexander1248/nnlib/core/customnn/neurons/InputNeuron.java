@@ -7,6 +7,11 @@ public class InputNeuron extends Neuron {
         return output;
     }
 
+    @Override
+    public Neuron clone() {
+        return new InputNeuron();
+    }
+
     public void setValue(double value) {
         output = value;
     }

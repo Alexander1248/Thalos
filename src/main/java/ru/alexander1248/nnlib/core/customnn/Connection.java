@@ -6,6 +6,15 @@ public class Connection {
     private Neuron data;
     public double weight;
 
+    public Connection(Neuron data) {
+        this.data = data;
+        this.weight = Math.random();
+    }
+    private Connection(Neuron data, double weight) {
+        this.data = data;
+        this.weight = weight;
+    }
+
     public void setLink(Neuron link) {
         data = link;
     }
@@ -16,5 +25,9 @@ public class Connection {
 
     public double getOutput() {
         return data.getOutput() * weight;
+    }
+
+    public Connection clone() {
+        return new Connection(data, weight);
     }
 }

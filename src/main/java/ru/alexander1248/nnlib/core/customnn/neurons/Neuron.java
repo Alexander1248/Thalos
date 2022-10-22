@@ -24,4 +24,6 @@ public abstract class Neuron {
         output = transmitting(in);
     }
     public abstract double transmitting(double[] values);
+
+    public abstract Neuron clone();
 }

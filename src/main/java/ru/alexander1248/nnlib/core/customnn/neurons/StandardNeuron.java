@@ -1,5 +1,6 @@
 package ru.alexander1248.nnlib.core.customnn.neurons;
 
+import ru.alexander1248.nnlib.core.customnn.Connection;
 import ru.alexander1248.nnlib.core.types.ActivationFunction;
 
 public class StandardNeuron extends Neuron {
@@ -43,5 +44,13 @@ public class StandardNeuron extends Neuron {
                 return Double.NaN;
             }
         }
+    }
+
+    @Override
+    public Neuron clone() {
+        StandardNeuron standardNeuron = new StandardNeuron(function);
+        for (Connection connection : getInput())
+            standardNeuron.getInput().add(connection.clone());
+        return standardNeuron;
     }
 }

@@ -9,9 +9,8 @@ import ru.alexander1248.nnlib.core.fastnn.NeuralNetwork;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.*;
 import java.util.List;
-import java.util.PriorityQueue;
-import java.util.Queue;
 
 public class NNDrawer {
     private final NeuralNetwork nn;
@@ -91,38 +90,107 @@ public class NNDrawer {
             return image;
         } else if (cnn != null) {
             List<List<Neuron>> layers = cnn.getLayers();
-            int size = layers.size();
-            int h = 0;
+            int count = 0;
+            for (List<Neuron> layer : layers) count += layer.size();
+            int metrics = (int) (Math.sqrt(count) * 300);
+
+            Queue<Neuron> el = new ArrayDeque<>();
+            List<Data> data = new ArrayList<>();
+
+
+            int k = -count / 2;
             for (List<Neuron> layer : layers)
-                if (layer.size() > h) h = layer.size();
+                for (Neuron neuron : layer) {
+                    el.add(neuron);
+                    data.add(new Data(neuron, (int) (Math.random() * metrics + 30), (int) (Math.random() * metrics + 30)));
+                    k++;
+                }
 
-            BufferedImage image = new BufferedImage((size + 1) * 50, (h + 1) * 50, BufferedImage.TYPE_3BYTE_BGR);
-            Graphics g = image.getGraphics();
+            int xCord, yCord;
+            while (!el.isEmpty()) {
+                Neuron neuron = el.poll();
+                Data data2 = data.stream().filter(data1 -> data1.neuron == neuron).findAny().get();
 
+                boolean intersection;
+                do {
+                    intersection = false;
+                    xCord = (int) (Math.random() * metrics + 30);
+                    yCord = (int) (Math.random() * metrics + 30);
+                    for (int i = 0; i < data.size(); i++) {
+                        Data d = data.get(i);
+                        if (Math.pow(xCord - d.x, 2) + Math.pow(yCord - d.y, 2) < 300) {
+                            el.add(d.neuron);
+                            intersection = true;
+                            break;
+                        } else if (neuron.getInput().stream().anyMatch(connection -> connection.getNeuron() == d.neuron)
+                                || d.neuron.getInput().stream().anyMatch(connection -> connection.getNeuron() == neuron)) {
+                            for (Data cir : data) {
+                                if (data2 != cir && d != cir && lci(xCord, yCord, d.x, d.y, cir.x, cir.y, 15)) {
+                                    el.add(d.neuron);
+                                    el.add(cir.neuron);
+                                    intersection = true;
+                                    break;
+                                }
+                            }
+                            if (intersection) break;
+                        }
+                    }
+                } while (intersection);
+                data2.x = xCord;
+                data2.y = yCord;
 
-            Queue<Data> data = new PriorityQueue<>();
-
-            g.setColor(new Color(255, 255, 64));
-            double shiftCurr = (double) (h - cnn.getOutputs().size()) / 2;
-            for (int i = 0; i < cnn.getOutputs().size(); i++) {
-                List<Connection> input = cnn.getOutputs().get(i).getInput();
-                for (int j = 0; j < input.size(); j++)
-                    data.add(new Data(input.get(j).getNeuron(), 1, j));
-
-                g.fillOval((int) ((size + 0.5) * 50), (int) ((shiftCurr + i + 0.5) * 50), 20, 20);
             }
 
-            while (!data.isEmpty()) {
-                Data d = data.poll();
-                if (d.neuron.getClass() == InputNeuron.class)
+            BufferedImage image = new BufferedImage(metrics + 60, metrics + 60, BufferedImage.TYPE_3BYTE_BGR);
+            Graphics g = image.getGraphics();
+
+            g.setColor(Color.WHITE);
+            for (Data d : data)
+                for (Connection connection : d.neuron.getInput()) {
+                    Data link = data.stream().filter(data1 -> data1.neuron == connection.getNeuron()).findAny().orElse(null);
+                    if (link != null) {
+                        if (link.neuron == d.neuron) {
+                            g.drawOval(d.x - 15, d.y - 15, 30, 30);
+                        }
+                        else {
+                            int dx = (link.x - d.x) / 5;
+                            int dy = (link.y - d.y) / 5;
+
+                            double len = Math.sqrt(dx * dx + dy * dy);
+                            int nx = (int) (-dy * 5 / len);
+                            int ny = (int) (dx * 5 / len);
+
+                            g.fillOval(
+                                    d.x + nx + dx - 2,
+                                    d.y + ny + dy - 2,
+                                    4, 4);
+                            g.drawPolyline(
+                                    new int[]{d.x,
+                                            d.x + dx + nx,
+                                            d.x + 2 * dx + nx * 2,
+                                            d.x + 3 * dx + nx * 2,
+                                            link.x - dx + nx,
+                                            link.x},
+                                    new int[]{d.y,
+                                            d.y + dy + ny,
+                                            d.y + 2 * dy + ny * 2,
+                                            d.y + 3 * dy + ny * 2,
+                                            link.y - dy + ny,
+                                            link.y},
+                                    6);
+                        }
+                    }
+                }
+
+            for (Data d : data) {
+                if (cnn.getOutputs().contains(d.neuron))
+                    g.setColor(new Color(255, 255, 64));
+                else if (cnn.getInputs().contains(d.neuron))
                     g.setColor(new Color(128, 255, 128));
                 else
                     g.setColor(new Color(128, 255, 255));
-                g.fillOval((int) ((size - d.y + 0.5) * 50), (int) ((shiftCurr + d.x + 0.5) * 50), 20, 20);
 
-                List<Connection> input = d.neuron().getInput();
-                for (int i = 0; i < input.size(); i++)
-                    data.add(new Data(input.get(i).getNeuron(), d.y + 1, i));
+                g.fillOval(d.x - 10,d.y - 10, 20, 20);
             }
 
             return image;
@@ -215,15 +283,150 @@ public class NNDrawer {
 
             BufferedImage image = new BufferedImage((size + 1) * 50, (h + 1) * 50, BufferedImage.TYPE_3BYTE_BGR);
             Graphics g = image.getGraphics();
-            g.setColor(new Color(255, 255, 64));
-            g.setColor(new Color(128, 255, 255));
-            g.setColor(new Color(128, 255, 128));
 
+
+            List<Neuron> used = new ArrayList<>();
+            Queue<Data> data = new ArrayDeque<>();
+
+            for (int i = 0; i < cnn.getOutputs().size(); i++) {
+                used.add(cnn.getOutputs().get(i));
+                int x = size * 50;
+
+                List<Connection> input = cnn.getOutputs().get(i).getInput();
+                for (int j = 0; j < input.size(); j++) {
+                    float gr = (float) (1 / (1 + Math.exp(cnn.getOutputs().get(i).getInput().get(j).weight)));
+                    g.setColor(new Color(1 - gr, gr, 0));
+                    if (input.get(j).getNeuron() == cnn.getOutputs().get(i))
+                        g.drawOval(x + 7, ((i + 1) * 50) + 7,
+                                20, 20
+                        );
+                    else {
+                        boolean il = false;
+                        for (List<Neuron> layer : layers)
+                            if (layer.contains(input.get(i).getNeuron()) && layer.contains(cnn.getOutputs().get(i))) {
+                                il = true;
+                                break;
+                            }
+
+                        if (il) {
+                            if (i > j)
+                                g.drawArc(x + 5, (i + 1) * 50 + 10,
+                                        20, (i - j) * 50,
+                                        -90, 180
+                                );
+                            else
+                                g.drawArc(x + 5, (i + 1) * 50 + 10,
+                                        20, (j - i) * 50,
+                                        90, 180
+                                );
+                        } else
+                            g.drawLine(x + 10, (i + 1) * 50 + 10,
+                                    x - 50 + 10, (j + 1) * 50 + 10
+                            );
+                    }
+
+                    data.add(new Data(input.get(j).getNeuron(), 1, j));
+                }
+
+                g.setColor(new Color(255, 255, 64));
+                g.fillOval(x, (i + 1) * 50, 20, 20);
+            }
+
+            while (!data.isEmpty()) {
+                Data d = data.poll();
+                if (!used.contains(d.neuron)) {
+                    used.add(d.neuron);
+                    int x = (size - d.y) * 50;
+
+                    List<Connection> input = d.neuron().getInput();
+                    for (int i = 0; i < input.size(); i++) {
+                        float gr = (float) (1 / (1 + Math.exp(d.neuron().getInput().get(i).weight)));
+                        g.setColor(new Color(1 - gr, gr, 0));
+                        if (input.get(i).getNeuron() == d.neuron())
+                            g.drawOval(x + 7, ((d.x + 1) * 50) + 7,
+                                    20, 20
+                            );
+                        else {
+                            boolean il = false;
+                            for (List<Neuron> layer : layers)
+                                if (layer.contains(input.get(i).getNeuron()) && layer.contains(d.neuron)) {
+                                    il = true;
+                                    break;
+                                }
+
+                            if (il) {
+                                if (d.x > i)
+                                    g.drawArc(x + 5, (d.x + 1) * 50 + 10,
+                                            20, (d.x - i) * 50,
+                                            -90, 180
+                                    );
+                                else
+                                    g.drawArc(x + 5, (d.x + 1) * 50 + 10,
+                                            20, (i - d.x) * 50,
+                                            90, 180
+                                    );
+                            } else
+                                g.drawLine(x + 10, (d.x + 1) * 50 + 10,
+                                        x - 50 + 10, (i + 1) * 50 + 10
+                                );
+                        }
+
+
+                        data.add(new Data(input.get(i).getNeuron(), d.y + 1, i));
+                    }
+
+                    if (d.neuron.getClass() == InputNeuron.class)
+                        g.setColor(new Color(128, 255, 128));
+                    else
+                        g.setColor(new Color(128, 255, 255));
+                    g.fillOval(x, (d.x + 1) * 50, 20, 20);
+                }
+            }
 
             return image;
         } else return null;
     }
 
 
-    private record Data(Neuron neuron, int y, int x) {}
+    private static final class Data {
+        private final Neuron neuron;
+        private int y;
+        private int x;
+
+        private Data(Neuron neuron, int y, int x) {
+            this.neuron = neuron;
+            this.y = y;
+            this.x = x;
+        }
+
+        public Neuron neuron() {
+            return neuron;
+        }
+    }
+
+
+    private boolean lci(double x1, double y1, double x2, double y2,
+                        double xC, double yC, double R) {
+        x1 -= xC;
+        y1 -= yC;
+        x2 -= xC;
+        y2 -= yC;
+
+        double dx = x2 - x1;
+        double dy = y2 - y1;
+
+        //составляем коэффициенты квадратного уравнения на пересечение прямой и окружности.
+        //если на отрезке [0..1] есть отрицательные значения, значит отрезок пересекает окружность
+        double a = dx*dx + dy*dy;
+        double b = 2.*(x1*dx + y1*dy);
+        double c = x1*x1 + y1*y1 - R*R;
+
+        //а теперь проверяем, есть ли на отрезке [0..1] решения
+        if (-b < 0)
+            return (c < 0);
+        if (-b < (2.*a))
+            return ((4.*a*c - b*b) < 0);
+
+        return (a+b+c < 0);
+    }
 }
