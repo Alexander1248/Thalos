@@ -133,6 +133,12 @@ public class CustomNeuralNetwork {
         return outputs;
     }
 
+    public void setLearningRule(CustomNNLearningRule rule) {
+        this.rule = rule;
+    }
+    public CustomNNLearningRule getLearningRule() {
+        return rule;
+    }
 
     public CustomNeuralNetwork clone() {
         CustomNeuralNetwork neuralNetwork = new CustomNeuralNetwork();
