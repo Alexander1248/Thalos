@@ -132,7 +132,7 @@ public class AnnealingLearning extends TeacherLearning {
     public void setThreadingType(ThreadingType threadingType) {
         this.workingType = threadingType;
         switch (workingType) {
-            case MultiCPU -> cpuWeights = new ThreadKernel(Runtime.getRuntime().availableProcessors() / 2) {
+            case MultiCPU -> cpuWeights = new ThreadKernel(Runtime.getRuntime().availableProcessors() / 2, 100) {
                 @Override
                 public void run(int gid) {
                     if (network.getLayers().get(l).getClass() == ConvolutionalLayer.class) {

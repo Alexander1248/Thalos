@@ -65,7 +65,7 @@ public class Layer {
     public void setThreadingType(ThreadingType type) {
         this.type = type;
         switch (type) {
-            case MultiCPU -> cpu = new ThreadKernel(Runtime.getRuntime().availableProcessors() / 2) {
+            case MultiCPU -> cpu = new ThreadKernel(Runtime.getRuntime().availableProcessors() / 2, 100) {
                 @Override
                 public void run(int gid) {
                     weightedSum[gid] = biasWeights[gid];

@@ -3,10 +3,11 @@ package ru.alexander1248.nnlib.core.fastnn.kernels;
 public abstract class ThreadKernel {
     private Thread[] threads;
 
-    private final int blockSize = 100;
+    private final int blockSize;
 
-    public ThreadKernel(int threadCount) {
+    public ThreadKernel(int threadCount, int blockSize) {
         threads = new Thread[threadCount];
+        this.blockSize = blockSize;
     }
     public void execute(int size) {
         boolean wait;

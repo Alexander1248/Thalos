@@ -159,7 +159,7 @@ public class BackPropagation extends TeacherLearning {
         this.workingType = threadingType;
         switch (workingType) {
             case MultiCPU:
-                cpuError = new ThreadKernel(Runtime.getRuntime().availableProcessors() / 2) {
+                cpuError = new ThreadKernel(Runtime.getRuntime().availableProcessors() / 2, 100) {
                     @Override
                     public void run(int gid) {
                         Layer layer = network.getLayers().get(l);
@@ -180,7 +180,7 @@ public class BackPropagation extends TeacherLearning {
                     }
                 };
 
-                cpuWeights = new ThreadKernel(Runtime.getRuntime().availableProcessors() / 2) {
+                cpuWeights = new ThreadKernel(Runtime.getRuntime().availableProcessors() / 2, 100) {
                     @Override
                     public void run(int gid) {
                         for (int prev = 0; prev < layerInput.length; prev++)

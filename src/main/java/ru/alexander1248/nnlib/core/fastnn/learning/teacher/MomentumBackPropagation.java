@@ -157,7 +157,7 @@ public class MomentumBackPropagation extends BackPropagation {
         this.workingType = threadingType;
         switch (workingType) {
             case MultiCPU -> {
-                cpuError = new ThreadKernel(Runtime.getRuntime().availableProcessors() / 2) {
+                cpuError = new ThreadKernel(Runtime.getRuntime().availableProcessors() / 2, 100) {
                     @Override
                     public void run(int gid) {
                         Layer layer = network.getLayers().get(l);
@@ -176,7 +176,7 @@ public class MomentumBackPropagation extends BackPropagation {
                         else if (layer.getAfType() == 6) error[l][gid] *= ((wsum + 1) * Math.exp(-wsum) + 1) / pow;
                     }
                 };
-                cpuWeights = new ThreadKernel(Runtime.getRuntime().availableProcessors() / 2) {
+                cpuWeights = new ThreadKernel(Runtime.getRuntime().availableProcessors() / 2, 100) {
                     @Override
                     public void run(int gid) {
                         for (int prev = 0; prev < layerInput.length; prev++) {
