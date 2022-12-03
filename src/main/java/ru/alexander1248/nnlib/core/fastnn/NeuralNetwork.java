@@ -30,10 +30,10 @@ public class NeuralNetwork {
         else layers.add(new Layer(layers.get(layers.size() - 1).getLayerSize(), size, threadingType, activationFunction));
     }
     public void addLayer(@Range(from = 0, to = Integer.MAX_VALUE) int size, ActivationFunction activationFunction) {
-        addLayer(size, activationFunction, ThreadingType.CPU);
+        addLayer(size, activationFunction, ThreadingType.MonoCPU);
     }
     public void addLayer(@Range(from = 0, to = Integer.MAX_VALUE) int size) {
-        addLayer(size, ActivationFunction.Sigmoid, ThreadingType.CPU);
+        addLayer(size, ActivationFunction.Sigmoid, ThreadingType.MonoCPU);
     }
 
     public NeuralNetwork clone() {
@@ -105,5 +105,11 @@ public class NeuralNetwork {
 
     public int getInputSize() {
         return inputSize;
+    }
+
+    public void reloadThreadings() {
+        for (int i = 0; i < layers.size(); i++)
+            layers.get(i).setThreadingType(layers.get(i).getThreadingType());
+
     }
 }

@@ -13,7 +13,7 @@ import ru.alexander1248.nnlib.core.types.ThreadingType;
 
 import java.util.List;
 
-import static ru.alexander1248.nnlib.core.types.ThreadingType.CPU;
+import static ru.alexander1248.nnlib.core.types.ThreadingType.MultiCPU;
 
 public class BackPropagation extends TeacherLearning {
     protected float[][] error;
@@ -25,7 +25,7 @@ public class BackPropagation extends TeacherLearning {
     protected int l = 0;
     protected float[] layerInput;
     public BackPropagation() {
-        setThreadingType(CPU);
+        setThreadingType(MultiCPU);
     }
 
     @Override
@@ -77,7 +77,7 @@ public class BackPropagation extends TeacherLearning {
         }
 
         switch (workingType) {
-            case CPU:
+            case MultiCPU:
                 for (l = layers.size() - 2; l >= 0; l--) {
                     int layerSize = network.getLayers().get(l).getLayerSize();
                     error[l] = new float[layerSize];
@@ -109,7 +109,7 @@ public class BackPropagation extends TeacherLearning {
     }
     private void calculateWeights(List<Layer> layers, DataSet.DataSetRow row) {
         switch (workingType) {
-            case CPU:
+            case MultiCPU:
                 l = 0;
                 layerInput = row.input;
                 cpuWeights.execute(layers.get(0).getLayerSize());
@@ -158,7 +158,7 @@ public class BackPropagation extends TeacherLearning {
     public void setThreadingType(ThreadingType threadingType) {
         this.workingType = threadingType;
         switch (workingType) {
-            case CPU:
+            case MultiCPU:
                 cpuError = new ThreadKernel(Runtime.getRuntime().availableProcessors() / 2) {
                     @Override
                     public void run(int gid) {

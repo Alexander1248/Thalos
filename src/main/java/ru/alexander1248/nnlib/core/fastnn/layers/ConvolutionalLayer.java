@@ -41,7 +41,7 @@ public class ConvolutionalLayer extends Layer {
     public void setThreadingType(ThreadingType type) {
         this.type = type;
         switch (type) {
-            case CPU -> cpu = new ThreadKernel(Runtime.getRuntime().availableProcessors() / 2) {
+            case MultiCPU -> cpu = new ThreadKernel(Runtime.getRuntime().availableProcessors() / 2) {
                 @Override
                 public void run(int gid) {
                     weightedSum[gid] = biasWeights[gid];
@@ -83,7 +83,7 @@ public class ConvolutionalLayer extends Layer {
 
     public void calculate() {
         switch (type) {
-            case CPU -> cpu.execute(output.length);
+            case MultiCPU -> cpu.execute(output.length);
             case GPU -> {
                 ConvolutionalLayerKernel cgpu = (ConvolutionalLayerKernel)gpu;
                 cgpu.input = input;

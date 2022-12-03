@@ -6,12 +6,15 @@ import ru.alexander1248.nnlib.core.types.ActivationFunction;
 public class StandardNeuron extends Neuron {
     private final ActivationFunction function;
 
+    public double bias;
+
     public StandardNeuron(ActivationFunction function) {
         this.function = function;
+        bias = Math.random();
     }
     @Override
     public double transmitting(double[] values) {
-        double sum = 0;
+        double sum = bias;
         for (int i = 0; i < values.length; i++)
             sum += values[i];
 
@@ -49,6 +52,7 @@ public class StandardNeuron extends Neuron {
     @Override
     public Neuron clone() {
         StandardNeuron standardNeuron = new StandardNeuron(function);
+        standardNeuron.bias = bias;
         for (Connection connection : getInput())
             standardNeuron.getInput().add(connection.clone());
         return standardNeuron;

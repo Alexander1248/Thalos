@@ -14,7 +14,7 @@ import ru.alexander1248.nnlib.core.types.ThreadingType;
 import java.util.ArrayList;
 import java.util.List;
 
-import static ru.alexander1248.nnlib.core.types.ThreadingType.CPU;
+import static ru.alexander1248.nnlib.core.types.ThreadingType.MultiCPU;
 
 public class AnnealingLearning extends TeacherLearning {
     protected ThreadKernel cpuWeights;
@@ -23,7 +23,7 @@ public class AnnealingLearning extends TeacherLearning {
     protected int l = 0;
     protected float[] layerInput;
     public AnnealingLearning() {
-        setThreadingType(CPU);
+        setThreadingType(MultiCPU);
     }
 
     @Override
@@ -87,7 +87,7 @@ public class AnnealingLearning extends TeacherLearning {
     }
     private void calculateWeights(List<Layer> layers, DataSet.DataSetRow row) {
         switch (workingType) {
-            case CPU -> {
+            case MultiCPU -> {
                 l = 0;
                 layerInput = row.input;
                 cpuWeights.execute(layers.get(0).getLayerSize());
@@ -132,7 +132,7 @@ public class AnnealingLearning extends TeacherLearning {
     public void setThreadingType(ThreadingType threadingType) {
         this.workingType = threadingType;
         switch (workingType) {
-            case CPU -> cpuWeights = new ThreadKernel(Runtime.getRuntime().availableProcessors() / 2) {
+            case MultiCPU -> cpuWeights = new ThreadKernel(Runtime.getRuntime().availableProcessors() / 2) {
                 @Override
                 public void run(int gid) {
                     if (network.getLayers().get(l).getClass() == ConvolutionalLayer.class) {

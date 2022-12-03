@@ -65,7 +65,7 @@ public class Layer {
     public void setThreadingType(ThreadingType type) {
         this.type = type;
         switch (type) {
-            case CPU -> cpu = new ThreadKernel(Runtime.getRuntime().availableProcessors() / 2) {
+            case MultiCPU -> cpu = new ThreadKernel(Runtime.getRuntime().availableProcessors() / 2) {
                 @Override
                 public void run(int gid) {
                     weightedSum[gid] = biasWeights[gid];
@@ -98,7 +98,26 @@ public class Layer {
 
     public void calculate() {
         switch (type) {
-            case CPU -> cpu.execute(output.length);
+            case MultiCPU -> cpu.execute(output.length);
+            case MonoCPU -> {
+                for (int i = 0; i < output.length; i++) {
+                    weightedSum[i] = biasWeights[i];
+                    for (int j = 0; j < input.length; j++)
+                        weightedSum[i] += input[j] * weights[i * input.length + j];
+
+                    if (afType == 0) output[i] = weightedSum[i];
+                    else if (afType == 1) output[i] = 1f / (1f + (float) Math.exp(-weightedSum[i]));
+                    else if (afType == 2) output[i] = 2f / (1f + (float) Math.exp(-weightedSum[i])) - 1;
+                    else if (afType == 3) output[i] = (float) Math.log(1 + Math.exp(weightedSum[i]));
+                    else if (afType == 4) output[i] = weightedSum[i] > 0 ? weightedSum[i] : 0;
+                    else if (afType == 5)
+                        output[i] = weightedSum[i] > 0 ? weightedSum[i] : 0.01f * weightedSum[i];
+                    else if (afType == 6)
+                        output[i] = weightedSum[i] / (1 + (float) Math.exp(-weightedSum[i]));
+                    else if (afType == 7) output[i] = weightedSum[i] > 0 ? 1 : 0;
+                    else if (afType == 8) output[i] = (float) Math.exp(weightedSum[i]);
+                }
+            }
             case GPU -> {
                 gpu.input = input;
                 gpu.weights = weights;
@@ -153,5 +172,9 @@ public class Layer {
 
     public void setBiasWeights(float[] biasWeights) {
         this.biasWeights = biasWeights;
+    }
+
+    public ThreadingType getThreadingType() {
+        return type;
     }
 }
