@@ -12,27 +12,6 @@ Adding Maven Dependency
 
 Copy/Paste following code into your pom.xml file.
 
-Up to version 1.5.0:
-
-```xml
-<repositories>
-    <repository>
-        <id>ru.alexander1248</id>
-        <url>https://github.com/Alexander1248</url>
-    </repository>
-</repositories>
-    
-<dependencies>
-        <dependency>
-            <groupId>ru.alexander1248</groupId>
-            <artifactId>fastnnlib</artifactId>
-            <version>1.3.5</version>
-        </dependency>
-</dependencies>
-```
-
-After version 1.5.0:
-
 ```xml
 <repositories>
     <repository>
@@ -45,7 +24,7 @@ After version 1.5.0:
         <dependency>
             <groupId>ru.alexander1248</groupId>
             <artifactId>thalos</artifactId>
-            <version>1.5.0</version>
+            <version>2.0.0</version>
         </dependency>
 </dependencies>
 ```
