@@ -1,6 +1,7 @@
 package ru.alexander1248.thalos.layers;
 
 import ru.alexander1248.thalos.core.Layer;
+import ru.alexander1248.thalos.learning.LearningRule;
 
 public class SigmoidLayer implements Layer {
     private double force = 1;
@@ -10,16 +11,26 @@ public class SigmoidLayer implements Layer {
     private final double[] weightedSum;
     private final double[] output;
 
-    private final double[] error;
+    private final double[] bias;
     private final double[][] weights;
 
-    public SigmoidLayer(double force, int inputSize, int layerSize) {
+    private final double[] error;
+
+    private final LearningRule rule;
+
+    public SigmoidLayer(double force, int inputSize, int layerSize, LearningRule rule) {
         this.force = force;
         this.inputSize = inputSize;
         output = new double[layerSize];
         weightedSum = new double[layerSize];
+
+        bias = new double[layerSize];
         weights = new double[layerSize][inputSize];
+
         error = new double[layerSize];
+
+        this.rule = rule;
+        rule.initialize(layerSize, inputSize);
     }
 
     @Override
@@ -35,7 +46,7 @@ public class SigmoidLayer implements Layer {
     @Override
     public void calculate() {
         for (int i = 0; i < output.length; i++) {
-            weightedSum[i] = 0;
+            weightedSum[i] = bias[i];
             for (int j = 0; j < inputSize; j++) weightedSum[i] += input[j] * weights[i][j];
 
             output[i] = 1.0 / (1 + Math.exp(-force * weightedSum[i]));
@@ -66,6 +77,6 @@ public class SigmoidLayer implements Layer {
 
     @Override
     public void recalculateWeights() {
-
+        rule.calculate(weights, bias, error, input);
     }
 }
