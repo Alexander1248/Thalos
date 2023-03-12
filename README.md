@@ -24,7 +24,7 @@ Copy/Paste following code into your pom.xml file.
         <dependency>
             <groupId>ru.alexander1248</groupId>
             <artifactId>thalos</artifactId>
-            <version>1.5.0</version>
+            <version>2.0.0</version>
         </dependency>
 </dependencies>
 ```
