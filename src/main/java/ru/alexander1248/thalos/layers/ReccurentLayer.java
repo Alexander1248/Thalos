@@ -1,9 +1,12 @@
 package ru.alexander1248.thalos.layers;
 
 import ru.alexander1248.thalos.core.Layer;
+import ru.alexander1248.thalos.functions.ActivationFunction;
 import ru.alexander1248.thalos.learning.LearningRule;
 
-public class SigmoidLayer implements Layer {
+import java.util.Arrays;
+
+public class ReccurentLayer implements Layer {
     private double force = 1;
 
     private double[] input;
@@ -17,25 +20,32 @@ public class SigmoidLayer implements Layer {
     private final double[] error;
 
     private final LearningRule rule;
+    private final ActivationFunction function;
 
-    public SigmoidLayer(double force, int inputSize, int layerSize, LearningRule rule) {
+    public ReccurentLayer(double force, int inputSize, int layerSize, LearningRule rule, ActivationFunction function) {
         this.force = force;
         this.inputSize = inputSize;
+        input = new double[inputSize];
         output = new double[layerSize];
         weightedSum = new double[layerSize];
 
         bias = new double[layerSize];
-        weights = new double[layerSize][inputSize];
+        weights = new double[layerSize][inputSize + layerSize];
 
         error = new double[layerSize];
 
         this.rule = rule;
-        rule.initialize(layerSize, inputSize);
+        rule.initialize(layerSize, inputSize + layerSize);
+
+        this.function = function;
     }
 
     @Override
     public void setInput(double[] data) {
-        if (data.length == inputSize) input = data;
+        if (data.length == inputSize) {
+            System.arraycopy(data,0, input, 0, data.length);
+            System.arraycopy(data,0, input, data.length, output.length);
+        }
     }
 
     @Override
@@ -49,7 +59,7 @@ public class SigmoidLayer implements Layer {
             weightedSum[i] = bias[i];
             for (int j = 0; j < inputSize; j++) weightedSum[i] += input[j] * weights[i][j];
 
-            output[i] = 1.0 / (1 + Math.exp(-force * weightedSum[i]));
+            output[i] = function.function(force * weightedSum[i]);
         }
     }
 
@@ -68,11 +78,8 @@ public class SigmoidLayer implements Layer {
 
     @Override
     public void calculateError(double[] nextLayerError) {
-        for (int i = 0; i < error.length; i++) {
-            error[i] = nextLayerError[i];
-            double v = Math.exp(-weightedSum[i]);
-            error[i] *= v / Math.pow(1 + v, 2);
-        }
+        for (int i = 0; i < error.length; i++)
+            error[i] = function.derivative(force * weightedSum[i]) * nextLayerError[i];
     }
 
     @Override
