@@ -1,8 +1,8 @@
 This library is currently outdated.
 ======
 A new library is currently being developed. 
-Thalos
 
+Thalos
 ======
 Thalos is an open source Java neural network framework.
 It contains open source Java library which correspond to basic NN concepts. The library is also optimized for fast calculations on GPU and CPU. This makes it possible to calculate and train neural networks at high speeds with minimal losses in development efficiency.
