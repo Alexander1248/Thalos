@@ -1,3 +1,5 @@
+This library is currently outdated.  A new library is currently being developed.
+======
 Thalos
 ======
 Thalos is an open source Java neural network framework.
