@@ -1,6 +1,6 @@
 This library is currently outdated.
 ======
-A new library is currently being developed. A possible name for the new library is GPU Neural Network.
+A new library is currently being developed.
 
 Thalos
 ======
